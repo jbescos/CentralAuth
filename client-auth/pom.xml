@@ -8,7 +8,14 @@
 	</parent>
 	<artifactId>client-auth</artifactId>
 	<packaging>jar</packaging>
+	<groupId>es.tododev.client</groupId>
 	<dependencies>
+		<dependency>
+			<groupId>es.tododev.common</groupId>
+			<artifactId>common-auth</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
