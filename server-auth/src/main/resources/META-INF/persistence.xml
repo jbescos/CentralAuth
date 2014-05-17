@@ -25,7 +25,6 @@
 			<property name="hibernate.validator.apply_to_ddl" value="false" />
 			<property name="hibernate.validator.autoregister_listeners" value="false" />
 			<property name="hibernate.archive.autodetection" value="class, hbm" />
-			<property name="hibernate.hbm2ddl.auto" value="create" />
 		</properties>
 	</persistence-unit>
 </persistence>

@@ -15,11 +15,13 @@ import org.slf4j.LoggerFactory;
 
 import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.server.config.ContextParams;
+import es.tododev.auth.server.oam.Oam;
 import es.tododev.auth.server.provider.EntityManagerProvider;
 import es.tododev.auth.server.provider.ExceptionLogger;
 import es.tododev.auth.server.resource.AuthorizeResource;
 import es.tododev.auth.server.service.AuthorizeService;
 import es.tododev.auth.server.service.LoginService;
+import es.tododev.auth.server.service.LogoutService;
 
 public class RestConfig extends ResourceConfig {
 
@@ -53,6 +55,8 @@ public class RestConfig extends ResourceConfig {
 			bindFactory(EntityManagerProvider.class).to(EntityManager.class);
 			bind(ContextParams.class).to(ContextParams.class);
 			bind(LoginService.class).to(LoginService.class);
+			bind(LogoutService.class).to(LogoutService.class);
+			bind(Oam.class).to(Oam.class);
 		}
 
 	}

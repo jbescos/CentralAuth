@@ -6,10 +6,6 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +16,7 @@ import es.tododev.auth.commons.dto.RespAuthorizationDTO;
 import es.tododev.auth.server.bean.Application;
 import es.tododev.auth.server.bean.User;
 import es.tododev.auth.server.config.ContextParams;
+import es.tododev.auth.server.oam.Oam;
 
 public class AuthorizeService {
 
@@ -27,12 +24,14 @@ public class AuthorizeService {
 	private final EntityManager em;
 	private final DigestGenerator digestGenerator;
 	private final ContextParams params;
+	private final Oam oam;
 	
 	@Inject
-	public AuthorizeService(EntityManager em, DigestGenerator digestGenerator, ContextParams params){
+	public AuthorizeService(EntityManager em, DigestGenerator digestGenerator, ContextParams params, Oam oam){
 		this.em = em;
 		this.digestGenerator = digestGenerator;
 		this.params = params;
+		this.oam = oam;
 	}
 	
 	public RespAuthorizationDTO authorize(ReqAuthorizationDTO in){
@@ -40,11 +39,7 @@ public class AuthorizeService {
 		String sign = null;
 		em.getTransaction().begin();
 		try{
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<User> criteria = cb.createQuery(User.class);
-			Root<User> enhancedUser = criteria.from(User.class);
-			Predicate predicate = cb.equal(enhancedUser.get("sharedDomainToken"), in.getSharedDomainToken());
-			List<User> users = em.createQuery(criteria.select(enhancedUser).where(predicate)).getResultList();
+			List<User> users = oam.getUserBySharedDomainToken(in.getSharedDomainToken(), em);
 			if(users != null && users.size() == 1){
 				Application application = em.find(Application.class, in.getAppId());
 				User user = users.get(0);

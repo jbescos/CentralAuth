@@ -64,6 +64,7 @@ public class LoginService {
 		for(String domain : params.getCrossCookieDomains()){
 			Cookie cookie = new Cookie(Constants.SHARED_DOMAINS_COOKIE, sharedDomainToken);
 			cookie.setDomain(domain);
+			cookie.setPath("/");
 			response.addCookie(cookie);
 			log.debug("Setting cookie in domain {}", domain);
 		}
