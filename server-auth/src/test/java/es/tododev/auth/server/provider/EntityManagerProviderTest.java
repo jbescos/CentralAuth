@@ -8,7 +8,7 @@ import javax.persistence.Persistence;
 
 import org.junit.Test;
 
-import es.tododev.auth.server.bean.Login;
+import es.tododev.auth.server.bean.User;
 
 public class EntityManagerProviderTest {
 	
@@ -25,13 +25,13 @@ public class EntityManagerProviderTest {
 		EntityManager em = provider.provide();
 		try{
 			em.getTransaction().begin();
-			Login login = new Login();
-			login.setLoginId(ID);
+			User login = new User();
+			login.setUsername(ID);
 			login.setPassword("password");
 			em.persist(login);
 			em.getTransaction().commit();
 			
-			Login fromDb = em.find(Login.class, ID);
+			User fromDb = em.find(User.class, ID);
 			assertNotNull(fromDb);
 			assertEquals(login.getPassword(), fromDb.getPassword());
 		}finally{

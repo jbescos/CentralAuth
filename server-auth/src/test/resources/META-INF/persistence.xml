@@ -4,9 +4,9 @@
 	version="2.0">
 	<persistence-unit name="persistenceConfig">
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-		<!-- <mapping-file>ormap.xml</mapping-file> -->
-		<!-- <jar-file>MyApp.jar</jar-file> -->
-		<class>es.tododev.auth.server.bean.Login</class>
+		<class>es.tododev.auth.server.bean.User</class>
+		<class>es.tododev.auth.server.bean.Application</class>
+		<class>es.tododev.auth.server.bean.UserRoles</class>
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
