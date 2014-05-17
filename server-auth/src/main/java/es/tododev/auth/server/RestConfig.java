@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import es.tododev.auth.commons.DigestGenerator;
+import es.tododev.auth.server.config.ContextParams;
 import es.tododev.auth.server.provider.EntityManagerProvider;
 import es.tododev.auth.server.provider.ExceptionLogger;
 import es.tododev.auth.server.resource.AuthorizeResource;
@@ -49,6 +50,7 @@ public class RestConfig extends ResourceConfig {
 			bind(AuthorizeService.class).to(AuthorizeService.class);
 			bind(DigestGenerator.class).to(DigestGenerator.class).in(Singleton.class);
 			bindFactory(EntityManagerProvider.class).to(EntityManager.class);
+			bind(ContextParams.class).to(ContextParams.class);
 		}
 
 	}

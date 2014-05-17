@@ -3,6 +3,8 @@ package es.tododev.auth.server.provider;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
@@ -28,6 +30,8 @@ public class EntityManagerProviderTest {
 			User login = new User();
 			login.setUsername(ID);
 			login.setPassword("password");
+			login.setSharedDomainToken("sharedDomainToken");
+			login.setExpireSharedDomainToken(new Date());
 			em.persist(login);
 			em.getTransaction().commit();
 			

@@ -14,9 +14,13 @@ public class DigestGenerator {
 		digester = MessageDigest.getInstance(ALGORITHM);
 	}
 	
-	public String generateDigest(String appId, String appPassword, String sharedDomainToken, String role){
-		StringBuilder builder = new StringBuilder(appId).append(sharedDomainToken).append(role).append(appPassword);
-		byte[] bytes=builder.toString().getBytes();
+	public String generateDigest(String appId, String appPassword, String sharedDomainToken, String role, String random){
+		StringBuilder builder = new StringBuilder(appId).append(sharedDomainToken).append(role).append(appPassword).append(random);
+    	return digest(builder.toString());
+	}
+	
+	public String digest(String rawWord){
+		byte[] bytes = rawWord.getBytes();
 		digester.update(bytes);
     	bytes=digester.digest();
     	String hex=Hex.encodeHexString(bytes);

@@ -5,6 +5,7 @@ public class ReqAuthorizationDTO {
 	private String appId;
 	private String sharedDomainToken;
 	private String role;
+	private String random;
 	
 	public String getAppId() {
 		return appId;
@@ -23,6 +24,12 @@ public class ReqAuthorizationDTO {
 	}
 	public void setSharedDomainToken(String sharedDomainToken) {
 		this.sharedDomainToken = sharedDomainToken;
+	}
+	public String getRandom() {
+		return random;
+	}
+	public void setRandom(String random) {
+		this.random = random;
 	}
 	
 }

@@ -2,6 +2,7 @@ package es.tododev.auth.client;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -23,6 +24,7 @@ import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import es.tododev.auth.commons.Constants;
 import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.commons.dto.ReqAuthorizationDTO;
@@ -58,7 +60,7 @@ public class AuthorizationFilter implements Filter{
 			String role = extractRole(request);
 			ReqAuthorizationDTO req = createDTO(sharedDomainToken, role);
 			RespAuthorizationDTO resp = authorize(req, RespAuthorizationDTO.class);
-			if(digestGenerator.generateDigest(appId, appPassword,  sharedDomainToken, role).equals(resp.getSign())){
+			if(digestGenerator.generateDigest(appId, appPassword,  sharedDomainToken, role, req.getRandom()).equals(resp.getSign())){
 				arg2.doFilter(arg0, arg1);
 			}else{
 				log.warn(sharedDomainToken+ " not authorized");
@@ -110,6 +112,7 @@ public class AuthorizationFilter implements Filter{
 		dto.setAppId(appId);
 		dto.setRole(role);
 		dto.setSharedDomainToken(sharedDomainToken);
+		dto.setRandom(UUID.randomUUID().toString());
 		return dto;
 	}
 

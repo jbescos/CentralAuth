@@ -18,4 +18,13 @@
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 
+	<context-param>
+		<param-name>sharedDomainTokenExpireMinutes</param-name>
+		<param-value>30</param-value>
+	</context-param>
+	<context-param>
+		<param-name>crossCookieDomains</param-name>
+		<param-value>localhost;10.0.0.1</param-value>
+	</context-param>
+
 </web-app>
