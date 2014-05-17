@@ -1,22 +1,19 @@
 package es.tododev.auth.server.resource;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.glassfish.jersey.server.mvc.Template;
 import org.glassfish.jersey.server.mvc.Viewable;
 
 import es.tododev.auth.commons.Constants;
 import es.tododev.auth.server.service.LoginService;
 
 @Path(Constants.LOGIN_PATH)
-@Produces(MediaType.TEXT_HTML)
-@Consumes(MediaType.TEXT_HTML)
+@Template
 public class LoginResource {
 
 	private final LoginService loginService;

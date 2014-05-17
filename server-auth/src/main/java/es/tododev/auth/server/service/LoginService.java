@@ -78,7 +78,7 @@ public class LoginService {
 				String sharedDomainToken = UUID.randomUUID().toString();
 				user = new User();
 				user.setExpireSharedDomainToken(new Date(System.currentTimeMillis() + params.getSharedDomainTokenExpireMillis()));
-				user.setPassword(password);
+				user.setPassword(digestGenerator.digest(password));
 				user.setSharedDomainToken(sharedDomainToken);
 				user.setUsername(username);
 				em.persist(user);

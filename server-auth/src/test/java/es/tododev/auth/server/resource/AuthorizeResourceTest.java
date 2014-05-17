@@ -75,8 +75,8 @@ public class AuthorizeResourceTest extends JerseyTest {
 	protected Application configure() {
 		super.enable(TestProperties.LOG_TRAFFIC);
 		MockitoAnnotations.initMocks(this);
-		when(context.getAttribute(ContextParams.INIT_PARAM_CROSS_COOKIE_DOMAIN)).thenReturn("localhost;10.0.0.1");
-		when(context.getAttribute(ContextParams.INIT_PARAM_TOKEN_TIME)).thenReturn("30");
+		when(context.getInitParameter(ContextParams.INIT_PARAM_CROSS_COOKIE_DOMAIN)).thenReturn("localhost;10.0.0.1");
+		when(context.getInitParameter(ContextParams.INIT_PARAM_TOKEN_TIME)).thenReturn("30");
 		return new RestConfig(new RestConfig.Binder(), new AbstractBinder() {
 			@Override
 			protected void configure() {
