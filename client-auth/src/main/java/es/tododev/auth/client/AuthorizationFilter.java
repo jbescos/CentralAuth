@@ -25,6 +25,7 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
+import es.tododev.auth.commons.Constants;
 import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.commons.dto.ReqAuthorizationDTO;
 import es.tododev.auth.commons.dto.RespAuthorizationDTO;
@@ -125,7 +126,7 @@ public class AuthorizationFilter implements Filter{
 		appId = checkAndGet(APP_ID, arg0);
 		appPassword = checkAndGet(APP_PASSWORD, arg0);
 		authServerURL = checkAndGet(AUTH_SERVER_URL, arg0);
-		authorizationURL = authServerURL+"/rest/authorize";
+		authorizationURL = authServerURL + Constants.AUTHORIZE_PATH;
 		try {
 			digestGenerator = new DigestGenerator();
 		} catch (NoSuchAlgorithmException e) {
