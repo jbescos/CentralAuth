@@ -19,6 +19,7 @@ import es.tododev.auth.server.provider.EntityManagerProvider;
 import es.tododev.auth.server.provider.ExceptionLogger;
 import es.tododev.auth.server.resource.AuthorizeResource;
 import es.tododev.auth.server.service.AuthorizeService;
+import es.tododev.auth.server.service.LoginService;
 
 public class RestConfig extends ResourceConfig {
 
@@ -51,6 +52,7 @@ public class RestConfig extends ResourceConfig {
 			bind(DigestGenerator.class).to(DigestGenerator.class).in(Singleton.class);
 			bindFactory(EntityManagerProvider.class).to(EntityManager.class);
 			bind(ContextParams.class).to(ContextParams.class);
+			bind(LoginService.class).to(LoginService.class);
 		}
 
 	}

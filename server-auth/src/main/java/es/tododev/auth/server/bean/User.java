@@ -17,7 +17,7 @@ public class User implements Serializable{
 
 	@Id
 	private String username;
-	@Column(nullable = false)
+	@Column(nullable = false, length = 500)
 	private String password;
 	@Column(nullable = false)
 	private String sharedDomainToken;

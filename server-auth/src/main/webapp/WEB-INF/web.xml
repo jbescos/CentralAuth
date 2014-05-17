@@ -15,7 +15,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>JerseyServlet</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
 
 	<context-param>
@@ -26,5 +26,9 @@
 		<param-name>crossCookieDomains</param-name>
 		<param-value>localhost;10.0.0.1</param-value>
 	</context-param>
+	
+	<welcome-file-list>
+        <welcome-file>login.html</welcome-file>
+    </welcome-file-list>
 
 </web-app>

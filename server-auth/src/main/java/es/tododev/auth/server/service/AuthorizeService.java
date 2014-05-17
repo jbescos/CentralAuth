@@ -44,7 +44,6 @@ public class AuthorizeService {
 			CriteriaQuery<User> criteria = cb.createQuery(User.class);
 			Root<User> enhancedUser = criteria.from(User.class);
 			Predicate predicate = cb.equal(enhancedUser.get("sharedDomainToken"), in.getSharedDomainToken());
-			// TODO add expireSharedDomainToken and role in the searching
 			List<User> users = em.createQuery(criteria.select(enhancedUser).where(predicate)).getResultList();
 			if(users != null && users.size() == 1){
 				Application application = em.find(Application.class, in.getAppId());

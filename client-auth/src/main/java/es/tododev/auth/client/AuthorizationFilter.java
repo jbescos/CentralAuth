@@ -36,7 +36,7 @@ public class AuthorizationFilter implements Filter{
 	public static final String APP_ID = "AppId";
 	public static final String APP_PASSWORD = "AppPassword";
 	public static final String AUTH_SERVER_URL = "AuthServerURL";
-	public static final String SHARED_DOMAINS_COOKIE = "sharedDomainsCookie";
+	
 	private final ClientConfig clientConfig = new ClientConfig();
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private DigestGenerator digestGenerator;
@@ -67,7 +67,7 @@ public class AuthorizationFilter implements Filter{
 				sendError(arg1, 403);
 			}
 		}else{
-			log.info("The user is not logged in the system. Cookie "+SHARED_DOMAINS_COOKIE+" doesn't exist in this domain");
+			log.info("The user is not logged in the system. Cookie "+Constants.SHARED_DOMAINS_COOKIE+" doesn't exist in this domain");
 			sendError(arg1, 401);
 		}
 	}
@@ -82,7 +82,7 @@ public class AuthorizationFilter implements Filter{
 	private String getSharedDomainToken(HttpServletRequest request){
 		Cookie[] cookies = request.getCookies();
 		for(Cookie cookie : cookies){
-			if(SHARED_DOMAINS_COOKIE.equals(cookie.getName())){
+			if(Constants.SHARED_DOMAINS_COOKIE.equals(cookie.getName())){
 				return cookie.getValue();
 			}
 		}
