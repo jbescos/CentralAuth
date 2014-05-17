@@ -2,7 +2,6 @@ package es.tododev.auth.client;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Logger;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -19,12 +18,11 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import es.tododev.auth.commons.Constants;
 import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.commons.dto.ReqAuthorizationDTO;
@@ -38,7 +36,7 @@ public class AuthorizationFilter implements Filter{
 	public static final String AUTH_SERVER_URL = "AuthServerURL";
 	public static final String SHARED_DOMAINS_COOKIE = "sharedDomainsCookie";
 	private final ClientConfig clientConfig = new ClientConfig();
-	private final Log log = LogFactory.getLog(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	private DigestGenerator digestGenerator;
 	private String authorizationURL;
 	
@@ -133,7 +131,7 @@ public class AuthorizationFilter implements Filter{
 			throw new ServletException("Can't start filter because there is no algorithm to make the digest", e);
 		}
 		clientConfig.register(JacksonFeature.class);
-		clientConfig.register(new LoggingFilter(Logger.getLogger(LoggingFilter.class.getName()), true));
+		clientConfig.register(new LoggingFilter(java.util.logging.Logger.getLogger(LoggingFilter.class.getName()), true));
 		
 		log.info(getClass().getCanonicalName()+" was successfully loaded");
 	}

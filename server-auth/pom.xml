@@ -11,13 +11,28 @@
 	<groupId>es.tododev.server</groupId>
 	<properties>
 		<jersey.version>2.5.1</jersey.version>
+		<hibernate.version>4.3.5.Final</hibernate.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>es.tododev.common</groupId>
 			<artifactId>common-auth</artifactId>
 			<version>1.0</version>
-			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

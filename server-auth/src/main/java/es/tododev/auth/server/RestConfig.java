@@ -1,45 +1,56 @@
 package es.tododev.auth.server;
 
-import java.util.logging.Logger;
+import javax.inject.Singleton;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import es.tododev.auth.commons.DigestGenerator;
+import es.tododev.auth.server.provider.EntityManagerProvider;
+import es.tododev.auth.server.provider.ExceptionLogger;
 import es.tododev.auth.server.resource.AuthorizeResource;
+import es.tododev.auth.server.service.AuthorizeService;
 
-public class RestConfig extends ResourceConfig{
+public class RestConfig extends ResourceConfig {
 
-private final Log log = LogFactory.getLog(getClass());
-	
+	private final Logger log = LoggerFactory.getLogger(getClass());
+
 	// For tests
- 	public RestConfig(Object ... injections){
- 		for(Object injection : injections){
- 			register(injection);
- 		}
- 		packages(AuthorizeResource.class.getPackage().getName());
- 		register(new LoggingFilter(Logger.getLogger(LoggingFilter.class.getName()), true));
- 		
-        property(ServerProperties.TRACING, "ALL");
+	public RestConfig(Object... injections) {
+		for (Object injection : injections) {
+			register(injection);
+		}
+		packages(AuthorizeResource.class.getPackage().getName());
+		register(new LoggingFilter(java.util.logging.Logger.getLogger(LoggingFilter.class.getName()), true));
+		
+		property(ServerProperties.TRACING, "ALL");
+		register(ExceptionLogger.class);
+		register(JacksonFeature.class);
+		log.info("Jersey has been loaded");
+	}
 
-        register(JacksonFeature.class);
- 		log.info("Jersey has been loaded");
- 	}
- 	
- 	public RestConfig(){
- 		this(new Binder());
- 	}
-	 	
- 	public static class Binder extends AbstractBinder{
+	public RestConfig() {
+		this(new Binder());
+	}
+
+	public static class Binder extends AbstractBinder {
 
 		@Override
 		protected void configure() {
+			bind(Persistence.createEntityManagerFactory("persistenceConfig")).to(EntityManagerFactory.class);
+			bind(AuthorizeService.class).to(AuthorizeService.class);
+			bind(DigestGenerator.class).to(DigestGenerator.class).in(Singleton.class);
+			bindFactory(EntityManagerProvider.class).to(EntityManager.class);
 		}
- 		
- 	}
- 	
+
+	}
+
 }
