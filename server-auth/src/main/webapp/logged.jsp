@@ -7,9 +7,9 @@
 </head>
 <body>
 	<h1>You have been logged!</h1>
-	<a href="./rest/logout"> Logout </a>
-	<a href="./roles.html"> Add role </a>
-	<a href="./application.html"> Add application </a>
+	<a href="/server-auth/rest/logout"> Logout </a>
+	<a href="/server-auth/roles.html"> Add role </a>
+	<a href="/server-auth/application.html"> Add application </a>
 	<cookie:iframes/>
 </body>
 </html>

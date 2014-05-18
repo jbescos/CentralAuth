@@ -7,10 +7,10 @@
 </head>
 <body>
 <h1>You are not logged</h1>
-	<a href="./login.html"> Login </a>
-	<a href="./register.html"> Register </a>
-	<a href="./roles.html"> Add role </a>
-	<a href="./application.html"> Add application </a>
+	<a href="/server-auth/login.html"> Login </a>
+	<a href="/server-auth/register.html"> Register </a>
+	<a href="/server-auth/roles.html"> Add role </a>
+	<a href="/server-auth/application.html"> Add application </a>
 	<cookie:iframes/>
 </body>
 </html>

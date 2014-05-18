@@ -26,7 +26,7 @@ public class CookieMgrServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		super.doPost(req, resp);
+		doPost(req, resp);
 	}
 
 	@Override
@@ -37,11 +37,11 @@ public class CookieMgrServlet extends HttpServlet {
 		if(sharedDomainToken != null){
 			// create
 			mgr.saveCookie(sharedDomainToken, resp);
-			log.info("Creating the cookie in {} with value {}", req.getPathInfo(), sharedDomainToken);
+			log.info("Creating the cookie with value {}", sharedDomainToken);
 		}else{
 			// remove
 			mgr.removeCooke(req, resp);
-			log.info("Removing the cookie in {}", req.getPathInfo());
+			log.info("Removing the cookie");
 		}
 	}
 

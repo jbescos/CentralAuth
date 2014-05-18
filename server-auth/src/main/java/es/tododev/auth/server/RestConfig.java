@@ -10,7 +10,6 @@ import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
-import org.glassfish.jersey.server.mvc.MvcFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,8 +40,8 @@ public class RestConfig extends ResourceConfig {
 		property(ServerProperties.TRACING, "ALL");
 		register(ExceptionLogger.class);
 		register(JacksonFeature.class);
-		register(MvcFeature.class);
-		property(MvcFeature.TEMPLATE_BASE_PATH, "/");
+//		register(MvcFeature.class);
+//		property(MvcFeature.TEMPLATE_BASE_PATH, "/");
 		log.info("Jersey has been loaded");
 	}
 

@@ -48,8 +48,6 @@
   <classpathentry kind="var" path="M2_REPO/jstl/jstl/1.2/jstl-1.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/glassfish/jersey/containers/jersey-container-servlet-core/2.5.1/jersey-container-servlet-core-2.5.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/glassfish/jersey/core/jersey-server/2.5.1/jersey-server-2.5.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/glassfish/jersey/ext/jersey-mvc-jsp/2.5.1/jersey-mvc-jsp-2.5.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/glassfish/jersey/ext/jersey-mvc/2.5.1/jersey-mvc-2.5.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/glassfish/jersey/test-framework/providers/jersey-test-framework-provider-grizzly2/2.5.1/jersey-test-framework-provider-grizzly2-2.5.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/glassfish/jersey/test-framework/jersey-test-framework-core/2.5.1/jersey-test-framework-core-2.5.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/4.11/junit-4.11.jar"/>

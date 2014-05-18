@@ -25,18 +25,30 @@ public class PrintIFrame extends TagSupport {
 		ServletRequest request = pageContext.getRequest();
 		for (@SuppressWarnings("unchecked") Enumeration<String> e = request.getAttributeNames(); e.hasMoreElements();) {
 			String attName = e.nextElement();
-			String attValue = (String) request.getAttribute(attName);
-			String iframe = TEMPLATE.replace(REPLACER, attValue);
-			builder.append(iframe);
+			if(isInt(attName)){
+				try{
+					String attValue = (String) request.getAttribute(attName);
+					String iframe = TEMPLATE.replace(REPLACER, attValue);
+					builder.append(iframe);
+				}catch(ClassCastException ex){}
+			}
 		}
 
 		try {
 			pageContext.getOut().append(builder.toString());
-			pageContext.getOut().close();
 		} catch (IOException e) {
 			log.error("", e);
 		}
 		return SKIP_BODY;
+	}
+	
+	private boolean isInt(String attName){
+		try{
+			Integer.parseInt(attName);
+			return true;
+		}catch(NumberFormatException e){
+			return false;
+		}
 	}
 
 }

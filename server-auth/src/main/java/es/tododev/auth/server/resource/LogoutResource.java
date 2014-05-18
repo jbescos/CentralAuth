@@ -1,13 +1,14 @@
 package es.tododev.auth.server.resource;
 
-import java.net.URISyntaxException;
+import java.io.IOException;
 
 import javax.inject.Inject;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-
-import org.glassfish.jersey.server.mvc.Viewable;
+import javax.ws.rs.core.Context;
 
 import es.tododev.auth.commons.Constants;
 import es.tododev.auth.server.service.LoginService;
@@ -15,18 +16,22 @@ import es.tododev.auth.server.service.LoginService;
 @Path(Constants.LOGOUT_PATH)
 public class LogoutResource {
 
-	private final String LOGGED_PAGE = "logout.jsp";
+	private final String LOGGED_PAGE = "/logout.jsp";
 	private final LoginService loginService;
+	private final HttpServletRequest request;
+	private final HttpServletResponse response;
 	
 	@Inject
-	public LogoutResource(LoginService loginService){
+	public LogoutResource(LoginService loginService, @Context HttpServletRequest request, @Context HttpServletResponse response){
 		this.loginService = loginService;
+		this.request = request;
+		this.response = response;
 	}
 	
 	@GET
-	public Response logout() throws URISyntaxException{
+	public void logout() throws ServletException, IOException {
 		loginService.logout();
-		return Response.ok().entity(new Viewable(LOGGED_PAGE, null)).build();
+		request.getRequestDispatcher(LOGGED_PAGE).forward(request, response);
 	}
 	
 }
