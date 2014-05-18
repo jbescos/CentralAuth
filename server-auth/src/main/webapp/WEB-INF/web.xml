@@ -23,12 +23,21 @@
 		<param-value>30</param-value>
 	</context-param>
 	<context-param>
-		<param-name>crossCookieDomains</param-name>
-		<param-value>localhost;10.0.0.1</param-value>
+		<param-name>crossCookiePaths</param-name>
+		<!-- Only put here the paths with different domains -->
+		<param-value>http://localhost:8080/app1/cookiemgr;http://10.0.0.1:8080/app2/cookiemgr
+		</param-value>
 	</context-param>
-	
+
 	<welcome-file-list>
-        <welcome-file>login.html</welcome-file>
-    </welcome-file-list>
+		<welcome-file>login.html</welcome-file>
+	</welcome-file-list>
+	<jsp-config>
+		<taglib>
+			<taglib-uri>https://github.com/jbescos/CentralAuth/jsp/msg
+			</taglib-uri>
+			<taglib-location>/WEB-INF/msg.tld</taglib-location>
+		</taglib>
+	</jsp-config>
 
 </web-app>

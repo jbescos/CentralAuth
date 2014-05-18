@@ -18,7 +18,7 @@ public class ContextParams {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	public static final String INIT_PARAM_TOKEN_TIME = "sharedDomainTokenExpireMinutes";
-	public static final String INIT_PARAM_CROSS_COOKIE_DOMAIN = "crossCookieDomains";
+	public static final String INIT_PARAM_CROSS_COOKIE_PATHS = "crossCookiePaths";
 	private final Set<String> crossCookieDomains;
 	private final long sharedDomainTokenExpireMillis;
 	
@@ -26,7 +26,7 @@ public class ContextParams {
 	public ContextParams(@Context ServletContext context){
 		long minutes = Long.parseLong(context.getInitParameter(INIT_PARAM_TOKEN_TIME));
 		sharedDomainTokenExpireMillis = minutes * 60 * 1000;
-		String[] domains = context.getInitParameter(INIT_PARAM_CROSS_COOKIE_DOMAIN).split(";");
+		String[] domains = context.getInitParameter(INIT_PARAM_CROSS_COOKIE_PATHS).split(";");
 		crossCookieDomains = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(domains)));
 		log.debug("Time to expire shared tokens is {} minutes", minutes);
 		log.debug("Cross Cookie Domains: {}", crossCookieDomains);

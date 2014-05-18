@@ -97,6 +97,7 @@ public class AuthorizationFilter implements Filter{
 		String[] words = fullPath.split("/");
 		for(int i = 0; i < words.length ; i++){
 			String word = words[i];
+			// FIXME no se extrae el rol
 			log.debug("Extracting word {}", word);
 			if(FILTER_AUTH_PATH.equals(FILTER_AUTH_PATH) && i + 1 <= words.length){
 				role = words[i+1];

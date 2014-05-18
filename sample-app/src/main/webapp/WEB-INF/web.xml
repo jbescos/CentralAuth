@@ -15,7 +15,18 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>JerseyServlet</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/test/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- This servlet is only necessary if this web app is in other domain than server-auth -->
+	<servlet>
+		<servlet-name>CookieMgrServlet</servlet-name>
+		<servlet-class>es.tododev.auth.client.CookieMgrServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CookieMgrServlet</servlet-name>
+		<url-pattern>/cookiemgr</url-pattern>
 	</servlet-mapping>
 
 	<filter>
@@ -36,7 +47,7 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>AuthorizationFilter</filter-name>
-		<url-pattern>/sample/auth/*</url-pattern>
+		<url-pattern>/test/sample/auth/*</url-pattern>
 	</filter-mapping>
 
 </web-app>

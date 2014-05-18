@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@ taglib uri="https://github.com/jbescos/CentralAuth/jsp/msg" prefix="cookie"%>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -10,5 +11,6 @@
 	<a href="./register.html"> Register </a>
 	<a href="./roles.html"> Add role </a>
 	<a href="./application.html"> Add application </a>
+	<cookie:iframes/>
 </body>
 </html>

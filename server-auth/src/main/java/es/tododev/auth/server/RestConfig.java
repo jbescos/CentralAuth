@@ -10,9 +10,11 @@ import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
+import org.glassfish.jersey.server.mvc.MvcFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import es.tododev.auth.commons.CookieManager;
 import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.server.config.ContextParams;
 import es.tododev.auth.server.oam.Oam;
@@ -22,7 +24,6 @@ import es.tododev.auth.server.resource.AuthorizeResource;
 import es.tododev.auth.server.service.ApplicationService;
 import es.tododev.auth.server.service.AuthorizeService;
 import es.tododev.auth.server.service.LoginService;
-import es.tododev.auth.server.service.LogoutService;
 import es.tododev.auth.server.service.RolesService;
 
 public class RestConfig extends ResourceConfig {
@@ -40,6 +41,8 @@ public class RestConfig extends ResourceConfig {
 		property(ServerProperties.TRACING, "ALL");
 		register(ExceptionLogger.class);
 		register(JacksonFeature.class);
+		register(MvcFeature.class);
+		property(MvcFeature.TEMPLATE_BASE_PATH, "/");
 		log.info("Jersey has been loaded");
 	}
 
@@ -57,10 +60,10 @@ public class RestConfig extends ResourceConfig {
 			bindFactory(EntityManagerProvider.class).to(EntityManager.class);
 			bind(ContextParams.class).to(ContextParams.class);
 			bind(LoginService.class).to(LoginService.class);
-			bind(LogoutService.class).to(LogoutService.class);
 			bind(Oam.class).to(Oam.class);
 			bind(RolesService.class).to(RolesService.class);
 			bind(ApplicationService.class).to(ApplicationService.class);
+			bind(CookieManager.class).to(CookieManager.class);
 		}
 
 	}
