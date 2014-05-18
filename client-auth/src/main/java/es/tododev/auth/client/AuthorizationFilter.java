@@ -32,7 +32,6 @@ import es.tododev.auth.commons.dto.RespAuthorizationDTO;
 
 public class AuthorizationFilter implements Filter{
 
-	public static final String FILTER_AUTH_PATH = "auth";
 	public static final String APP_ID = "AppId";
 	public static final String APP_PASSWORD = "AppPassword";
 	public static final String AUTH_SERVER_URL = "AuthServerURL";
@@ -91,22 +90,11 @@ public class AuthorizationFilter implements Filter{
 	}
 	
 	private String extractRole(HttpServletRequest request) throws ServletException{
-		String role = null;
 		String fullPath = request.getRequestURI();
 		log.debug("Extracting role from path {}", fullPath);
-		String[] words = fullPath.split("/");
-		for(int i = 0; i < words.length ; i++){
-			String word = words[i];
-			// FIXME no se extrae el rol
-			log.debug("Extracting word {}", word);
-			if(FILTER_AUTH_PATH.equals(FILTER_AUTH_PATH) && i + 1 <= words.length){
-				role = words[i+1];
-				log.debug("The role needed for this path is: "+role);
-				break;
-			}
-		}
+		String role = new ExtractRoleFromPath().extract(fullPath);
 		if(role == null){
-			throw new ServletException("Can't find the needed role in path. Be sure that your authentication paths has the next format: .../"+FILTER_AUTH_PATH+"/{role}...");
+			throw new ServletException("Can't find the needed role in path. Be sure that your authentication paths has the next format: .../"+ExtractRoleFromPath.FILTER_AUTH_PATH+"/{role}...");
 		}
 		return role;
 	}
