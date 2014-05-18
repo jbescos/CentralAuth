@@ -75,28 +75,31 @@ public class AuthorizationFilter implements Filter{
 	private <IN, OUT> OUT authorize(IN input, Class<OUT> out){
 		Entity<IN> in = Entity.entity(input, MediaType.APPLICATION_JSON);
 		Client client = ClientBuilder.newBuilder().withConfig(clientConfig).build();
-		Response response = client.target(authorizationURL).request().post(in);
+		Response response = client.target(authorizationURL).request().accept(MediaType.APPLICATION_JSON).post(in);
 		return response.readEntity(out);
 	}
 	
 	private String getSharedDomainToken(HttpServletRequest request){
 		Cookie[] cookies = request.getCookies();
-		for(Cookie cookie : cookies){
-			if(Constants.SHARED_DOMAINS_COOKIE.equals(cookie.getName())){
-				return cookie.getValue();
+		if(cookies != null)
+			for(Cookie cookie : cookies){
+				if(Constants.SHARED_DOMAINS_COOKIE.equals(cookie.getName())){
+					return cookie.getValue();
+				}
 			}
-		}
 		return null;
 	}
 	
 	private String extractRole(HttpServletRequest request) throws ServletException{
 		String role = null;
 		String fullPath = request.getRequestURI();
+		log.debug("Extracting role from path {}", fullPath);
 		String[] words = fullPath.split("/");
 		for(int i = 0; i < words.length ; i++){
 			String word = words[i];
+			log.debug("Extracting word {}", word);
 			if(FILTER_AUTH_PATH.equals(FILTER_AUTH_PATH) && i + 1 <= words.length){
-				role = word;
+				role = words[i+1];
 				log.debug("The role needed for this path is: "+role);
 				break;
 			}
@@ -123,11 +126,11 @@ public class AuthorizationFilter implements Filter{
 
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
-		log.debug("<filter><filter-name>AuthorizationFilter</filter-name><filter-class>es.tododev.auth.AuthorizationFilter</filter-class><init-param><param-name>AppId</param-name><param-value>The app id</param-value></init-param><init-param><param-name>AppPassword</param-name><param-value>The app password of your app</param-value></init-param><init-param><param-name>AuthServerURL</param-name><param-value>The domain of your auth server</param-value></init-param></filter><filter-mapping><filter-name>AuthorizationFilter</filter-name><url-pattern>*/auth/*</url-pattern></filter-mapping> ");
+		log.debug("<filter><filter-name>AuthorizationFilter</filter-name><filter-class>es.tododev.auth.client.AuthorizationFilter</filter-class><init-param><param-name>AppId</param-name><param-value>The app id</param-value></init-param><init-param><param-name>AppPassword</param-name><param-value>The app password of your app</param-value></init-param><init-param><param-name>AuthServerURL</param-name><param-value>http://localhost:8080/server-auth/</param-value></init-param></filter><filter-mapping><filter-name>AuthorizationFilter</filter-name><url-pattern>*/auth/*</url-pattern></filter-mapping> ");
 		appId = checkAndGet(APP_ID, arg0);
 		appPassword = checkAndGet(APP_PASSWORD, arg0);
 		authServerURL = checkAndGet(AUTH_SERVER_URL, arg0);
-		authorizationURL = authServerURL + Constants.AUTHORIZE_PATH;
+		authorizationURL = authServerURL + Constants.AUTHORIZE_REST_PATH;
 		try {
 			digestGenerator = new DigestGenerator();
 		} catch (NoSuchAlgorithmException e) {

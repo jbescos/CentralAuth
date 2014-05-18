@@ -29,6 +29,7 @@ public class AuthorizeResource {
 		log.debug("Creating instance of {}", this);
 	}
 
+	// curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"appId":"app1","sharedDomainToken":"65c7a515-592b-47ca-a1d0-45f8d8419fa1","role":"","random":"57b7aa10-7df9-4182-8a54-e9e95ef2bdee"}' http://localhost:8080/server-auth/rest/authorize
 	@POST
 	public Response authorize(ReqAuthorizationDTO dto){
 		return Response.ok(service.authorize(dto)).build();

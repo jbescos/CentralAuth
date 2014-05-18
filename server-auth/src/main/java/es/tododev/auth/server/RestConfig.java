@@ -19,9 +19,11 @@ import es.tododev.auth.server.oam.Oam;
 import es.tododev.auth.server.provider.EntityManagerProvider;
 import es.tododev.auth.server.provider.ExceptionLogger;
 import es.tododev.auth.server.resource.AuthorizeResource;
+import es.tododev.auth.server.service.ApplicationService;
 import es.tododev.auth.server.service.AuthorizeService;
 import es.tododev.auth.server.service.LoginService;
 import es.tododev.auth.server.service.LogoutService;
+import es.tododev.auth.server.service.RolesService;
 
 public class RestConfig extends ResourceConfig {
 
@@ -57,6 +59,8 @@ public class RestConfig extends ResourceConfig {
 			bind(LoginService.class).to(LoginService.class);
 			bind(LogoutService.class).to(LogoutService.class);
 			bind(Oam.class).to(Oam.class);
+			bind(RolesService.class).to(RolesService.class);
+			bind(ApplicationService.class).to(ApplicationService.class);
 		}
 
 	}

@@ -73,6 +73,7 @@ public class AuthorizeService {
 	private boolean checkRoleAndDate(User user, ReqAuthorizationDTO in){
 		Date now = new Date();
 		if(now.getTime() < user.getExpireSharedDomainToken().getTime()){
+			log.debug("Searching for role {} in {}", in.getRole(), user.getUserRoles().getRoles());
 			for(String role : user.getUserRoles().getRoles()){
 				if(role.toLowerCase().equals(in.getRole().toLowerCase())){
 					log.info("Has the needed role");

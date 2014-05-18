@@ -1,6 +1,7 @@
 package es.tododev.auth.server.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,9 +26,9 @@ public class UserRoles implements Serializable{
 	@ElementCollection
 	private Set<String> roles = new HashSet<String>();
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "userRoles")
-    private List<User> users;
+    private List<User> users = new ArrayList<User>();
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "appsRoles")
-    private List<Application> apps;
+    private List<Application> apps = new ArrayList<Application>();
 	
 	public String getUsername() {
 		return username;
