@@ -57,7 +57,7 @@ public class LoginService {
 				user.setExpireSharedDomainToken(expireSharedDomainToken);
 				user.setSharedDomainToken(sharedDomainToken);
 				success = true;
-				addAttributes(sharedDomainToken);
+				addAttributes(sharedDomainToken, username);
 			}else{
 				log.info("User not match");
 			}
@@ -86,7 +86,7 @@ public class LoginService {
 				user.setUsername(username);
 				em.persist(user);
 				cookieMgr.saveCookie(sharedDomainToken, response);
-				addAttributes(sharedDomainToken);
+				addAttributes(sharedDomainToken, username);
 			}else{
 				log.warn("This user already exists");
 			}
@@ -102,6 +102,7 @@ public class LoginService {
 	}
 	
 	public void logout(){
+		String username = null;
 		em.getTransaction().begin();
 		try{
 			String sharedDomainToken = cookieMgr.removeCooke(request, response);
@@ -111,9 +112,10 @@ public class LoginService {
 					User user = users.get(0);
 					user.setExpireSharedDomainToken(new Date(0));
 					user.setSharedDomainToken("logout");
+					username = user.getUsername();
 				}
 			}
-			addAttributes(null);
+			addAttributes(null, username);
 			em.getTransaction().commit();
 		}catch(Exception e){
 			em.getTransaction().rollback();
@@ -124,12 +126,14 @@ public class LoginService {
 		}
 	}
 	
-	private void addAttributes(String sharedDomainToken){
+	private void addAttributes(String sharedDomainToken, String username){
 		int i = 0;
 		for(String cookiePathMgr : params.getCrossCookieDomains()){
 			UriBuilder builder = new JerseyUriBuilder().path(cookiePathMgr);
 			if(sharedDomainToken != null)
 				builder.queryParam(Constants.SHARED_DOMAINS_COOKIE, sharedDomainToken);
+			if(username != null)
+				builder.queryParam(Constants.USER_NAME_KEY, username);
 			String cookiePathMgrValue = builder.build().toString();
 			request.setAttribute(Integer.toString(i), cookiePathMgrValue);
 			log.debug("Adding attribute {} = {}", i, cookiePathMgrValue);

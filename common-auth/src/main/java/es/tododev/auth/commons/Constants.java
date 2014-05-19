@@ -2,6 +2,7 @@ package es.tododev.auth.commons;
 
 public class Constants {
 
+	public static final String USER_NAME_KEY = "username";
 	public static final String SHARED_DOMAINS_COOKIE = "sharedDomainsCookie";
 	public static final String AUTHORIZE_REST_PATH = "rest/authorize";
 	public static final String AUTHORIZE_PATH = "/authorize";
