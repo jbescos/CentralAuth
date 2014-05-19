@@ -27,15 +27,18 @@ public class RolesService {
 			User user = em.find(User.class, username);
 			Application app = em.find(Application.class, appId);
 			if(user != null && app != null){
-				UserRoles userRoles = new UserRoles();
-				userRoles.setAppId(appId);
-				userRoles.getApps().add(app);
+				UserRoles userRoles = em.find(UserRoles.class, new UserRoles.PK(username, appId));
+				if(userRoles == null){
+					userRoles = new UserRoles();
+					userRoles.setAppId(appId);
+					userRoles.getApps().add(app);
+					userRoles.setUsername(username);
+					userRoles.getUsers().add(user);
+					user.setUserRoles(userRoles);
+					app.setAppsRoles(userRoles);
+					em.persist(userRoles);
+				}
 				userRoles.getRoles().add(role);
-				userRoles.setUsername(username);
-				userRoles.getUsers().add(user);
-				user.setUserRoles(userRoles);
-				app.setAppsRoles(userRoles);
-				em.persist(userRoles);
 			}
 			em.getTransaction().commit();
 		}catch(Exception e){
