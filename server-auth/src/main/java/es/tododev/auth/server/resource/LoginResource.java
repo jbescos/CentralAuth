@@ -20,8 +20,8 @@ public class LoginResource {
 
 	private final LoginService loginService;
 	private final String LOGIN_PAGE = "/login.html";
-	private final String REGISTER_PAGE = "/register.html";
-	private final String LOGGED_PAGE = "/logged.jsp";
+	private final String REGISTER_PAGE = "/layoutit/src/register.html";
+	private final String LOGGED_PAGE = "/layoutit/src/logged.jsp";
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
 	

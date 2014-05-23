@@ -16,7 +16,7 @@ import es.tododev.auth.server.service.LoginService;
 @Path(Constants.LOGOUT_PATH)
 public class LogoutResource {
 
-	private final String LOGGED_PAGE = "/logout.jsp";
+	private final String LOGGED_PAGE = "/layoutit/src/logout.jsp";
 	private final LoginService loginService;
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@ taglib uri="https://github.com/jbescos/CentralAuth/jsp/msg" prefix="cookie"%>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -10,7 +11,7 @@
 	<!--link rel="stylesheet/less" href="less/bootstrap.less" type="text/css" /-->
 	<!--link rel="stylesheet/less" href="less/responsive.less" type="text/css" /-->
 	<!--script src="js/less-1.3.3.min.js"></script-->
-	<!--append â#!watchâ to the browser URL, then refresh the page. -->
+	<!--append ‘#!watch’ to the browser URL, then refresh the page. -->
 	
 	<link href="/server-auth/layoutit/src/css/bootstrap.min.css" rel="stylesheet">
 	<link href="/server-auth/layoutit/src/css/style.css" rel="stylesheet">
@@ -59,19 +60,11 @@
 				</li>
 			</ul>
 			<h3>
-				Login
+				You are login!
 			</h3>
-			<form role="form" action="/server-auth/rest/login" method="post">
-				<div class="form-group">
-					 <label for="exampleInputEmail1">Username</label><input class="form-control" id="exampleInputEmail1" type="text" name="username">
-				</div>
-				<div class="form-group">
-					 <label for="exampleInputPassword1">Password</label><input class="form-control" id="exampleInputPassword1" type="password" name="password">
-				</div>
-				<button type="submit" class="btn btn-default">Submit</button>
-			</form>
 		</div>
 	</div>
 </div>
+<cookie:iframes/>
 </body>
 </html>
