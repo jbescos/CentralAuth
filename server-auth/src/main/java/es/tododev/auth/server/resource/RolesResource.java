@@ -25,7 +25,7 @@ public class RolesResource {
 	@POST
 	public Response addRole(@FormParam("username") String username, @FormParam("appId") String appId, @FormParam("role") String role) throws URISyntaxException{
 		rolesService.addRole(username, appId, role);
-		return Response.seeOther(new URI("../roles.html")).build();
+		return Response.seeOther(new URI("/server-auth/layoutit/src/roles.html")).build();
 	}
 	
 }
