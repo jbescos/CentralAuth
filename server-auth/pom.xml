@@ -90,7 +90,7 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>tomcat-maven-plugin</artifactId>
 					<configuration>
-						<url>http://localhost:8080/manager/text</url>
+						<url>http://10.20.5.10:8080/manager/text</url>
 						<server>mytomcat</server>
 						<path>/server-auth</path>
 					</configuration>

@@ -2,7 +2,6 @@ package es.tododev.auth.server.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -21,6 +20,7 @@ import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.server.bean.User;
 import es.tododev.auth.server.config.ContextParams;
 import es.tododev.auth.server.oam.Oam;
+import es.tododev.auth.server.provider.UUIDgenerator;
 
 public class LoginService {
 	
@@ -32,9 +32,10 @@ public class LoginService {
 	private final CookieManager cookieMgr;
 	private final HttpServletRequest request;
 	private final Oam oam;
+	private final UUIDgenerator uuid;
 
 	@Inject
-	public LoginService(EntityManager em, ContextParams params, DigestGenerator digestGenerator, @Context HttpServletResponse response, @Context HttpServletRequest request, CookieManager cookieMgr, Oam oam){
+	public LoginService(UUIDgenerator uuid, EntityManager em, ContextParams params, DigestGenerator digestGenerator, @Context HttpServletResponse response, @Context HttpServletRequest request, CookieManager cookieMgr, Oam oam){
 		this.em = em;
 		this.digestGenerator = digestGenerator;
 		this.params = params;
@@ -42,6 +43,7 @@ public class LoginService {
 		this.cookieMgr = cookieMgr;
 		this.request = request;
 		this.oam = oam;
+		this.uuid = uuid;
 	}
 	
 	public boolean successLogin(String username, String password){
@@ -51,7 +53,7 @@ public class LoginService {
 		try{
 			user = em.find(User.class, username);
 			if(user != null && user.getPassword().equals(digestGenerator.digest(password))){
-				String sharedDomainToken = UUID.randomUUID().toString();
+				String sharedDomainToken = uuid.create();
 				cookieMgr.saveCookie(sharedDomainToken, response);
 				Date expireSharedDomainToken = new Date(System.currentTimeMillis() + params.getSharedDomainTokenExpireMillis());
 				user.setExpireSharedDomainToken(expireSharedDomainToken);
@@ -78,7 +80,7 @@ public class LoginService {
 		try{
 			User user = em.find(User.class, username);
 			if(user == null){
-				String sharedDomainToken = UUID.randomUUID().toString();
+				String sharedDomainToken = uuid.create();
 				user = new User();
 				user.setExpireSharedDomainToken(new Date(System.currentTimeMillis() + params.getSharedDomainTokenExpireMillis()));
 				user.setPassword(digestGenerator.digest(password));
