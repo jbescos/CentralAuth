@@ -1,11 +1,15 @@
 package es.tododev.auth.server.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @SuppressWarnings("serial")
 @Entity
@@ -15,8 +19,8 @@ public class Application implements Serializable{
 	private String appId;
 	@Column(nullable = false)
 	private String password;
-	@ManyToOne
-	private UserRoles appsRoles;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "application")
+    private List<UserRoles> userRoles = new ArrayList<UserRoles>();
 	
 	public String getAppId() {
 		return appId;
@@ -30,12 +34,11 @@ public class Application implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public UserRoles getAppsRoles() {
-		return appsRoles;
+	public List<UserRoles> getUserRoles() {
+		return userRoles;
 	}
-	public void setAppsRoles(UserRoles appsRoles) {
-		this.appsRoles = appsRoles;
+	public void setUserRoles(List<UserRoles> userRoles) {
+		this.userRoles = userRoles;
 	}
-	
 	
 }

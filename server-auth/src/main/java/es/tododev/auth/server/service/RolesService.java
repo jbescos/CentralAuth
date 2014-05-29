@@ -66,11 +66,11 @@ public class RolesService {
 				if(userRoles == null){
 					userRoles = new UserRoles();
 					userRoles.setAppId(appId);
-					userRoles.getApps().add(app);
+					userRoles.setApplication(app);
 					userRoles.setUsername(username);
-					userRoles.getUsers().add(user);
-					user.setUserRoles(userRoles);
-					app.setAppsRoles(userRoles);
+					userRoles.setUser(user);
+					user.getUserRoles().add(userRoles);
+					app.getUserRoles().add(userRoles);
 					em.persist(userRoles);
 				}
 				userRoles.getRoles().add(role);

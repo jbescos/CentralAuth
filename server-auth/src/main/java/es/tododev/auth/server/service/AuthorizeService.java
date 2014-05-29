@@ -15,6 +15,7 @@ import es.tododev.auth.commons.dto.ReqAuthorizationDTO;
 import es.tododev.auth.commons.dto.RespAuthorizationDTO;
 import es.tododev.auth.server.bean.Application;
 import es.tododev.auth.server.bean.User;
+import es.tododev.auth.server.bean.UserRoles;
 import es.tododev.auth.server.config.ContextParams;
 import es.tododev.auth.server.oam.Oam;
 
@@ -43,7 +44,8 @@ public class AuthorizeService {
 			if(users != null && users.size() == 1){
 				Application application = em.find(Application.class, in.getAppId());
 				User user = users.get(0);
-				if(application != null && checkRoleAndDate(user, in)){
+				UserRoles userAppRole = em.find(UserRoles.class, new UserRoles.PK(user.getUsername(), in.getAppId()));
+				if(application != null && checkRoleAndDate(user, userAppRole, in)){
 					// update expire token
 					user.setExpireSharedDomainToken(new Date(user.getExpireSharedDomainToken().getTime()+params.getSharedDomainTokenExpireMillis()));
 					sign = digestGenerator.generateDigest(in.getAppId(), application.getPassword(), in.getSharedDomainToken(), in.getRole(), in.getRandom());
@@ -70,11 +72,11 @@ public class AuthorizeService {
 		return out;
 	}
 	
-	private boolean checkRoleAndDate(User user, ReqAuthorizationDTO in){
+	private boolean checkRoleAndDate(User user, UserRoles userAppRole, ReqAuthorizationDTO in){
 		Date now = new Date();
 		if(now.getTime() < user.getExpireSharedDomainToken().getTime()){
-			log.debug("Searching for role {} in {}", in.getRole(), user.getUserRoles().getRoles());
-			for(String role : user.getUserRoles().getRoles()){
+			log.debug("Searching for role {} in {}", in.getRole(), userAppRole.getRoles());
+			for(String role : userAppRole.getRoles()){
 				if(role.toLowerCase().equals(in.getRole().toLowerCase())){
 					log.info("Has the needed role");
 					return true;

@@ -25,7 +25,7 @@ public class ApplicationResource {
 	@POST
 	public Response addApplication(@FormParam("appId") String appId, @FormParam("password") String password) throws URISyntaxException{
 		applicationService.addApplication(appId, password);
-		return Response.seeOther(new URI("../application.html")).build();
+		return Response.seeOther(new URI("/server-auth/layoutit/src/application.html")).build();
 	}
 	
 }

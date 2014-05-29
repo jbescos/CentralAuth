@@ -1,18 +1,14 @@
 package es.tododev.auth.server.bean;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 
 @SuppressWarnings("serial")
 @Entity
@@ -25,10 +21,10 @@ public class UserRoles implements Serializable{
 	private String appId;
 	@ElementCollection
 	private Set<String> roles = new HashSet<String>();
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "userRoles")
-    private List<User> users = new ArrayList<User>();
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "appsRoles")
-    private List<Application> apps = new ArrayList<Application>();
+	@ManyToOne
+	private User user;
+	@ManyToOne
+	private Application application;
 	
 	public String getUsername() {
 		return username;
@@ -48,17 +44,17 @@ public class UserRoles implements Serializable{
 	public void setRoles(Set<String> roles) {
 		this.roles = roles;
 	}
-	public List<User> getUsers() {
-		return users;
+	public User getUser() {
+		return user;
 	}
-	public void setUsers(List<User> users) {
-		this.users = users;
+	public void setUser(User user) {
+		this.user = user;
 	}
-	public List<Application> getApps() {
-		return apps;
+	public Application getApplication() {
+		return application;
 	}
-	public void setApps(List<Application> apps) {
-		this.apps = apps;
+	public void setApplication(Application application) {
+		this.application = application;
 	}
 
 	public static class PK implements Serializable {

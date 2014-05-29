@@ -24,8 +24,7 @@
 	</context-param>
 	<context-param>
 		<param-name>crossCookiePaths</param-name>
-		<!-- Only put here the paths with different domains -->
-		<param-value>http://10.20.1.28:8080/agigraph-auth/cookiemgr</param-value>
+		<param-value>http://localhost:8080/sample-app/cookiemgr</param-value>
 	</context-param>
 
 	<welcome-file-list>

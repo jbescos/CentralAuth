@@ -1,13 +1,17 @@
 package es.tododev.auth.server.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Index;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
@@ -23,8 +27,8 @@ public class User implements Serializable{
 	private String sharedDomainToken;
 	@Column(nullable = false)
 	private Date expireSharedDomainToken;
-	@ManyToOne
-	private UserRoles userRoles;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    private List<UserRoles> userRoles = new ArrayList<UserRoles>();
 	
 	public String getUsername() {
 		return username;
@@ -38,12 +42,6 @@ public class User implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public UserRoles getUserRoles() {
-		return userRoles;
-	}
-	public void setUserRoles(UserRoles userRoles) {
-		this.userRoles = userRoles;
-	}
 	public String getSharedDomainToken() {
 		return sharedDomainToken;
 	}
@@ -55,6 +53,12 @@ public class User implements Serializable{
 	}
 	public void setExpireSharedDomainToken(Date expireSharedDomainToken) {
 		this.expireSharedDomainToken = expireSharedDomainToken;
+	}
+	public List<UserRoles> getUserRoles() {
+		return userRoles;
+	}
+	public void setUserRoles(List<UserRoles> userRoles) {
+		this.userRoles = userRoles;
 	}
 	
 }
