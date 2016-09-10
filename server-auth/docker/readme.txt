@@ -17,3 +17,15 @@ $ docker ps -a
 
 # To remove container
 $ docker rm CONTAINER_ID
+
+# Upload a image to a google cloud repository. In my case project_id = botlogic-140309
+$ docker tag server-auth eu.gcr.io/botlogic-140309/server-auth
+$ gcloud docker push eu.gcr.io/botlogic-140309/server-auth
+
+# Usging kubectl -> http://kubernetes.io/docs/hellonode/
+$ gcloud docker build -t eu.gcr.io/botlogic-140309/server-auth .
+$ gcloud container clusters create server-auth
+$ kubectl run server-auth --image=eu.gcr.io/botlogic-140309/server-auth:v1 --port=8080
+$ kubectl cluster-info
+$ kubectl expose deployment server-auth --type="LoadBalancer"
+$ kubectl get services
