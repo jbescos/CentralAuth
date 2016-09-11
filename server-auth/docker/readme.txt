@@ -24,8 +24,9 @@ $ gcloud docker push eu.gcr.io/botlogic-140309/server-auth
 
 # Usging kubectl -> http://kubernetes.io/docs/hellonode/
 $ gcloud docker build -t eu.gcr.io/botlogic-140309/server-auth .
-$ gcloud container clusters create server-auth
-$ kubectl run server-auth --image=eu.gcr.io/botlogic-140309/server-auth:v1 --port=8080
+$ gcloud config set compute/zone europe-west1-d
+$ gcloud container clusters create cluster-1
+$ kubectl run my-node --image=eu.gcr.io/botlogic-140309/server-auth:v1 --port=8080
 $ kubectl cluster-info
-$ kubectl expose deployment server-auth --type="LoadBalancer"
+$ kubectl expose deployment my-node --type="LoadBalancer"
 $ kubectl get services
