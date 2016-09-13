@@ -19,11 +19,11 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import es.tododev.auth.commons.Constants;
 import es.tododev.auth.commons.DigestGenerator;
@@ -37,7 +37,7 @@ public class AuthorizationFilter implements Filter{
 	public static final String AUTH_SERVER_URL = "AuthServerURL";
 	
 	private final ClientConfig clientConfig = new ClientConfig();
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final static Logger log = LogManager.getLogger();
 	private DigestGenerator digestGenerator;
 	private String authorizationURL;
 	

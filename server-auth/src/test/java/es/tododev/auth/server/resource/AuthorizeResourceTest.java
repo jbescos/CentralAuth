@@ -13,17 +13,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import es.tododev.auth.commons.Constants;
 import es.tododev.auth.commons.DigestGenerator;
@@ -32,10 +33,13 @@ import es.tododev.auth.commons.dto.RespAuthorizationDTO;
 import es.tododev.auth.server.RestConfig;
 import es.tododev.auth.server.config.ContextParams;
 import es.tododev.auth.server.provider.ExceptionLogger;
+import es.tododev.auth.server.rules.LoggerRule;
 
 public class AuthorizeResourceTest extends JerseyTest {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final static Logger log = LogManager.getLogger();
+	@Rule
+	public final LoggerRule loggerRule = new LoggerRule(getClass());
 	@Mock
 	private ServletContext context;
 	

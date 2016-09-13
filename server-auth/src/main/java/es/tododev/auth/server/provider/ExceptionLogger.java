@@ -4,13 +4,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Provider
 public class ExceptionLogger implements ExceptionMapper<Exception>{
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final static Logger log = LogManager.getLogger();
 
 	@Override
 	public Response toResponse(Exception paramE) {

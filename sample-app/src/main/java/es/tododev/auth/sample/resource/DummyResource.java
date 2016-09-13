@@ -6,15 +6,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Path("/sample")
 @Produces(MediaType.TEXT_PLAIN)
 @Consumes(MediaType.TEXT_PLAIN)
 public class DummyResource {
 	
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final static Logger log = LogManager.getLogger();
 	
 	@GET
 	public String noAuthenticaiton(){

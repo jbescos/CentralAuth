@@ -7,8 +7,8 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.commons.dto.ReqAuthorizationDTO;
@@ -21,7 +21,7 @@ import es.tododev.auth.server.oam.Oam;
 
 public class AuthorizeService {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final static Logger log = LogManager.getLogger();
 	private final EntityManager em;
 	private final DigestGenerator digestGenerator;
 	private final ContextParams params;

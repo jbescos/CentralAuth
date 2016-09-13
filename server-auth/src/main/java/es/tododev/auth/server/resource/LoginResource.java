@@ -7,9 +7,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 
 import es.tododev.auth.commons.Constants;
 import es.tododev.auth.server.service.LoginService;
@@ -30,6 +33,15 @@ public class LoginResource {
 		this.loginService = loginService;
 		this.request = request;
 		this.response = response;
+	}
+	
+	@GET
+	public Response loginB2B(@QueryParam("username") String username, @QueryParam("password") String password){
+		if(loginService.successLogin(username, password)){
+			return Response.ok().build();
+		}else{
+			return Response.status(403).build();
+		}
 	}
 	
 	@POST

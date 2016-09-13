@@ -7,13 +7,13 @@ import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @SuppressWarnings("serial")
 public class PrintIFrame extends TagSupport {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final static Logger log = LogManager.getLogger();
 	private final static String REPLACER = "crossdomain";
 	private final static String TEMPLATE = "<iframe src='"+REPLACER+"' style='visibility:hidden;display:none' height='0' width='0'></iframe>";
 

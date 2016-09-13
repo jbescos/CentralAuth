@@ -36,6 +36,7 @@ import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -50,6 +51,7 @@ import es.tododev.auth.server.oam.Oam;
 import es.tododev.auth.server.provider.EntityManagerProvider;
 import es.tododev.auth.server.provider.ExceptionLogger;
 import es.tododev.auth.server.provider.UUIDgenerator;
+import es.tododev.auth.server.rules.LoggerRule;
 import es.tododev.auth.server.service.ApplicationService;
 import es.tododev.auth.server.service.AuthorizeService;
 import es.tododev.auth.server.service.LoginService;
@@ -57,6 +59,8 @@ import es.tododev.auth.server.service.RolesService;
 
 public class RolesResourceTest extends JerseyTest {
 
+	@Rule
+	public final LoggerRule loggerRule = new LoggerRule(getClass());
 	@Mock
 	private HttpServletRequest request;
 	@Mock

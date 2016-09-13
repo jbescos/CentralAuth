@@ -10,13 +10,13 @@ import javax.inject.Singleton;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Singleton
 public class ContextParams {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final static Logger log = LogManager.getLogger();
 	public static final String INIT_PARAM_TOKEN_TIME = "sharedDomainTokenExpireMinutes";
 	public static final String INIT_PARAM_CROSS_COOKIE_PATHS = "crossCookiePaths";
 	private final Set<String> crossCookieDomains;

@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriBuilder;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import es.tododev.auth.commons.Constants;
 import es.tododev.auth.commons.CookieManager;
@@ -24,7 +24,7 @@ import es.tododev.auth.server.provider.UUIDgenerator;
 
 public class LoginService {
 	
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final static Logger log = LogManager.getLogger();
 	private final EntityManager em;
 	private final DigestGenerator digestGenerator;
 	private final ContextParams params;

@@ -1,11 +1,11 @@
 package es.tododev.auth.client;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ExtractRoleFromPath {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final static Logger log = LogManager.getLogger();
 	public static final String FILTER_AUTH_PATH = "auth";
 	
 	public String extract(String path){
