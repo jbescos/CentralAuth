@@ -11,13 +11,13 @@
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
 			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
-			<property name="hibernate.connection.url" value="jdbc:mysql://localhost/authorization" />
+			<property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/authorization" />
 			<property name="hibernate.connection.username" value="root" />
 			<property name="hibernate.connection.password" value="root" />
 			<property name="hibernate.c3p0.min_size" value="5" />
 			<property name="hibernate.c3p0.max_size" value="20" />
 			<property name="hibernate.c3p0.idleTestPeriod" value="30" />
-			<property name="hibernate.c3p0.timeout" value="0" />
+			<property name="hibernate.c3p0.timeout" value="60" />
 			<property name="hibernate.c3p0.max_statements" value="0" />
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="true" />
@@ -25,7 +25,7 @@
 			<property name="hibernate.validator.apply_to_ddl" value="false" />
 			<property name="hibernate.validator.autoregister_listeners" value="false" />
 			<property name="hibernate.archive.autodetection" value="class, hbm" />
-<!-- 			<property name="hibernate.hbm2ddl.auto" value="create-drop" /> -->
+			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
 		</properties>
 	</persistence-unit>
 </persistence>
