@@ -10,12 +10,12 @@ public class ExtractRoleFromPath {
 	
 	public String extract(String path){
 		String[] words = path.split("\\/");
-		log.info("Number of words {}", words.length);
 		int i = 0;
 		for(String word : words){
-			log.info("Checking {}", word);
 			if(FILTER_AUTH_PATH.equals(word) && words.length >= i+1){
-				return words[i+1];
+				String role = words[i+1];
+				log.debug("Role {}", role);
+				return role;
 			}
 			i++;
 		}
