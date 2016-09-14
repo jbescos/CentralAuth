@@ -24,7 +24,7 @@
 	</context-param>
 	<context-param>
 		<param-name>crossCookiePaths</param-name>
-		<param-value>http://localhost:8080/sample-app/cookiemgr</param-value>
+		<param-value>http://localhost:8080/server/cookiemgr</param-value>
 	</context-param>
 
 	<welcome-file-list>

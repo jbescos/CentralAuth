@@ -9,10 +9,6 @@
 	<artifactId>sample-app</artifactId>
 	<packaging>war</packaging>
 	<groupId>es.tododev.sample</groupId>
-	<properties>
-		<jersey.version>2.5.1</jersey.version>
-		<hibernate.version>4.3.5.Final</hibernate.version>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>es.tododev.common</groupId>

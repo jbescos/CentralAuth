@@ -14,6 +14,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import es.tododev.auth.commons.Constants;
 import es.tododev.auth.server.service.LoginService;
 
@@ -21,6 +23,7 @@ import es.tododev.auth.server.service.LoginService;
 //@Produces(MediaType.TEXT_HTML) 
 public class LoginResource {
 
+	private final static Logger log = LogManager.getLogger();
 	private final LoginService loginService;
 	private final String LOGIN_PAGE = "/login.html";
 	private final String REGISTER_PAGE = "/layoutit/src/register.html";
@@ -37,6 +40,7 @@ public class LoginResource {
 	
 	@GET
 	public Response loginB2B(@QueryParam("username") String username, @QueryParam("password") String password){
+		log.debug("User "+username+" doing login");
 		if(loginService.successLogin(username, password)){
 			return Response.ok().build();
 		}else{
