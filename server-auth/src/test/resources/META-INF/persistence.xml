@@ -7,6 +7,9 @@
 		<class>es.tododev.auth.server.bean.User</class>
 		<class>es.tododev.auth.server.bean.Application</class>
 		<class>es.tododev.auth.server.bean.UserRoles</class>
+		<class>es.tododev.auth.server.bean.GroupApplications</class>
+		<class>es.tododev.auth.server.bean.UserApplication</class>
+		
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />

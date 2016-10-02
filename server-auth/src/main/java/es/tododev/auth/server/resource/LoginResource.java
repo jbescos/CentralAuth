@@ -1,21 +1,20 @@
 package es.tododev.auth.server.resource;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.inject.Inject;
+import javax.security.auth.login.LoginException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import es.tododev.auth.commons.Constants;
 import es.tododev.auth.server.service.LoginService;
 
@@ -25,50 +24,37 @@ public class LoginResource {
 
 	private final static Logger log = LogManager.getLogger();
 	private final LoginService loginService;
-	private final String LOGIN_PAGE = "/login.html";
-	private final String REGISTER_PAGE = "/layoutit/src/register.html";
-	public static final String LOGGED_PAGE = "/layoutit/src/logged.jsp";
-	private final HttpServletRequest request;
-	private final HttpServletResponse response;
 	
 	@Inject
-	public LoginResource(LoginService loginService, @Context HttpServletRequest request, @Context HttpServletResponse response){
+	public LoginResource(LoginService loginService){
 		this.loginService = loginService;
-		this.request = request;
-		this.response = response;
 	}
 	
 	@GET
-	public Response loginB2B(@QueryParam("username") String username, @QueryParam("password") String password){
+	@Path("/login/{appId}")
+	public Response login(@PathParam("appId") String appId, @QueryParam("username") String username, @QueryParam("password") String password) throws Exception{
 		log.debug("User "+username+" doing login");
-		if(loginService.successLogin(username, password)){
-			return Response.ok().build();
-		}else{
+		try {
+			List<String> urls = loginService.successLogin(username, password, appId);
+			return Response.ok(urls).build();
+		} catch (LoginException e) {
 			return Response.status(403).build();
 		}
+		
 	}
 	
-	@POST
-	public void login(@FormParam("username") String username, @FormParam("password") String password) throws ServletException, IOException{
-		String pageResponse = null;
-		if(loginService.successLogin(username, password)){
-			pageResponse = LOGGED_PAGE;
-		}else{
-			pageResponse = LOGIN_PAGE;
+	@GET
+	@Path("/register/{appId}")
+	public Response register(@PathParam("appId") String appId, @QueryParam("username") String username, @QueryParam("password1") String password1, @QueryParam("password2") String password2) throws ServletException, IOException {
+		if(password1.equals(password2)){
+			try {
+				List<String> urls = loginService.register(username, password1, appId);
+				return Response.ok(urls).build();
+			} catch (LoginException e) {
+				return Response.status(403).build();
+			}
 		}
-		request.getRequestDispatcher(pageResponse).forward(request, response);
-	}
-	
-	@POST
-	@Path("/register")
-	public void register(@FormParam("username") String username, @FormParam("password1") String password1, @FormParam("password2") String password2) throws ServletException, IOException {
-		String pageResponse = null;
-		if(password1.equals(password2) && loginService.register(username, password1)){
-			pageResponse = LOGGED_PAGE;
-		}else{
-			pageResponse = REGISTER_PAGE;
-		}
-		request.getRequestDispatcher(pageResponse).forward(request, response);
+		return Response.status(403).build();
 	}
 	
 }

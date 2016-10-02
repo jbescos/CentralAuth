@@ -1,0 +1,40 @@
+<div class="navbar">
+			<div class="row">
+				<h1 class="lead">
+					<a [routerLink]="['']">{{api.title}}</a>
+				</h1>
+        <ul>
+          <li>
+				  <a [routerLink]="['']">Home</a>
+          </li>
+          <li>
+          <a [routerLink]="['register']">Register</a>
+          </li>
+          <li>
+          <a [routerLink]="['login']">Login</a>
+          </li>
+        </ul>
+			</div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="eight columns" style="max-width:25%">
+					
+				</div>
+				<div class="two columns" style="max-width:70%">
+					<router-outlet></router-outlet>
+				</div>
+			</div>
+		</div>
+		<div class="navbar">
+			<div class="row">
+        <ul>
+          <li>
+				 <a [href]="url" target="_blank">Github</a>
+          </li>
+          <li>
+         <a [routerLink]="['about']">About</a>
+          </li>
+         </ul>
+			</div>
+		</div>

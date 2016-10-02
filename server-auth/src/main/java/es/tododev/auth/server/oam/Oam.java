@@ -1,6 +1,8 @@
 package es.tododev.auth.server.oam;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -8,17 +10,26 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import es.tododev.auth.server.bean.User;
-
 public class Oam {
 	
-	public List<User> getUserBySharedDomainToken(String sharedDomainToken, EntityManager em){
+	public final static String APP_TOKEN = "appToken";
+	public final static String APP_ID = "appId";
+	public final static String GROUP_ID = "groupId";
+	public final static String USER_NAME = "username";
+	
+	public <T> List<T> getByColumns(Map<String,String> columnValue, EntityManager em, Class<T> entity){
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<User> criteria = cb.createQuery(User.class);
-		Root<User> enhancedUser = criteria.from(User.class);
-		Predicate predicate = cb.equal(enhancedUser.get("sharedDomainToken"), sharedDomainToken);
-		List<User> users = em.createQuery(criteria.select(enhancedUser).where(predicate)).getResultList();
-		return users;
+		CriteriaQuery<T> criteria = cb.createQuery(entity);
+		Root<T> enhancedUser = criteria.from(entity);
+		Predicate[] predicates = columnValue.entrySet().stream().map(entry -> cb.equal(enhancedUser.get(entry.getKey()), entry.getValue())).toArray(size -> new Predicate[size]);
+		List<T> userApplication = em.createQuery(criteria.select(enhancedUser).where(predicates)).getResultList();
+		return userApplication;
+	}
+	
+	public <T> List<T> getByColumn(String column, String value, EntityManager em, Class<T> entity){
+		Map<String,String> columns = new HashMap<>();
+		columns.put(column, value);
+		return getByColumns(columns, em, entity);
 	}
 	
 }

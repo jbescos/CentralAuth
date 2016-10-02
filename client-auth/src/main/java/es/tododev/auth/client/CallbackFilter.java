@@ -28,19 +28,18 @@ public class CallbackFilter implements Filter{
 	}
 
 	@Override
-	public void doFilter(ServletRequest arg0, ServletResponse arg1,
-			FilterChain arg2) throws IOException, ServletException {
+	public void doFilter(ServletRequest arg0, ServletResponse arg1, FilterChain arg2) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest)arg0;
 		HttpServletResponse resp = (HttpServletResponse)arg1;
 		CookieManager mgr = new CookieManager();
-		String sharedDomainToken = req.getParameter(Constants.SHARED_DOMAINS_COOKIE);
+		String sharedDomainToken = req.getParameter(Constants.APP_COOKIE);
 		if(sharedDomainToken != null){
 			// create
 			mgr.saveCookie(sharedDomainToken, resp);
 			log.info("Creating the cookie with value {}", sharedDomainToken);
 		}else{
 			// remove
-			mgr.removeCooke(req, resp);
+			mgr.removeCookie(req, resp);
 			log.info("Removing the cookie");
 		}
 		arg2.doFilter(arg0, arg1);

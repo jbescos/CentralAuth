@@ -29,7 +29,7 @@
 
 	<filter>
 		<filter-name>AuthorizationFilter</filter-name>
-		<filter-class>es.tododev.auth.client.AuthorizationFilter</filter-class>
+		<filter-class>es.tododev.auth.client.AuthoriationXmlFilter</filter-class>
 		<init-param>
 			<param-name>AppId</param-name>
 			<param-value>app1</param-value>

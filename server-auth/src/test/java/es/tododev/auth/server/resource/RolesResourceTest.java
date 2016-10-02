@@ -5,11 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -45,7 +43,6 @@ import es.tododev.auth.commons.Constants;
 import es.tododev.auth.commons.CookieManager;
 import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.server.RestConfig;
-import es.tododev.auth.server.config.ContextParams;
 import es.tododev.auth.server.dto.RolesDTO;
 import es.tododev.auth.server.oam.Oam;
 import es.tododev.auth.server.provider.EntityManagerProvider;
@@ -64,9 +61,7 @@ public class RolesResourceTest extends JerseyTest {
 	@Mock
 	private HttpServletRequest request;
 	@Mock
-	private HttpServletResponse response;
-	@Mock
-	private ContextParams contextParams;
+	private HttpServletResponse response;;
 	@Mock
 	private UUIDgenerator uuid;
 	
@@ -125,7 +120,6 @@ public class RolesResourceTest extends JerseyTest {
 		Entity<MultivaluedMap<String, String>> form = Entity.entity(formParams, MediaType.APPLICATION_FORM_URLENCODED);
 		Response response = target(Constants.LOGIN_PATH+"/register").request().post(form);
 		assertEquals(Status.OK, response.getStatus());
-		verify(request).getRequestDispatcher(LoginResource.LOGGED_PAGE);
 	}
 	
 	@Override
@@ -134,8 +128,6 @@ public class RolesResourceTest extends JerseyTest {
 		MockitoAnnotations.initMocks(this);
 		RequestDispatcher dispatcher = mock(RequestDispatcher.class);
 		when(request.getRequestDispatcher(anyString())).thenReturn(dispatcher);
-		when(contextParams.getCrossCookieDomains()).thenReturn(new HashSet<String>(Arrays.asList("http://localhost:8080/sample-app/cookiemgr")));
-		when(uuid.create()).thenReturn(SHARED_DOMAIN_TOKEN);
 		return new RestConfig(new AbstractBinder() {
 			
 			@Override
@@ -152,7 +144,6 @@ public class RolesResourceTest extends JerseyTest {
 				
 				bind(request).to(HttpServletRequest.class);
 				bind(response).to(HttpServletResponse.class);
-				bind(contextParams).to(ContextParams.class);
 				bind(uuid).to(UUIDgenerator.class);
 			}
 		});

@@ -15,7 +15,6 @@ import org.glassfish.jersey.server.ServerProperties;
 
 import es.tododev.auth.commons.CookieManager;
 import es.tododev.auth.commons.DigestGenerator;
-import es.tododev.auth.server.config.ContextParams;
 import es.tododev.auth.server.oam.Oam;
 import es.tododev.auth.server.provider.EntityManagerProvider;
 import es.tododev.auth.server.provider.ExceptionLogger;
@@ -23,12 +22,14 @@ import es.tododev.auth.server.provider.UUIDgenerator;
 import es.tododev.auth.server.resource.AuthorizeResource;
 import es.tododev.auth.server.service.ApplicationService;
 import es.tododev.auth.server.service.AuthorizeService;
+import es.tododev.auth.server.service.GroupApplicationsService;
 import es.tododev.auth.server.service.LoginService;
 import es.tododev.auth.server.service.RolesService;
 
 public class RestConfig extends ResourceConfig {
 
 	private final static Logger log = LogManager.getLogger();
+	public final static String PERSISTENCE_MODEL = "persistenceConfig";
 
 	// For tests
 	public RestConfig(Object... injections) {
@@ -54,15 +55,15 @@ public class RestConfig extends ResourceConfig {
 
 		@Override
 		protected void configure() {
-			bind(Persistence.createEntityManagerFactory("persistenceConfig")).to(EntityManagerFactory.class);
+			bind(Persistence.createEntityManagerFactory(PERSISTENCE_MODEL)).to(EntityManagerFactory.class);
 			bind(AuthorizeService.class).to(AuthorizeService.class);
 			bind(DigestGenerator.class).to(DigestGenerator.class).in(Singleton.class);
 			bindFactory(EntityManagerProvider.class).to(EntityManager.class);
-			bind(ContextParams.class).to(ContextParams.class);
 			bind(LoginService.class).to(LoginService.class);
 			bind(Oam.class).to(Oam.class);
 			bind(RolesService.class).to(RolesService.class);
 			bind(ApplicationService.class).to(ApplicationService.class);
+			bind(GroupApplicationsService.class).to(GroupApplicationsService.class);
 			bind(CookieManager.class).to(CookieManager.class);
 			bind(UUIDgenerator.class).to(UUIDgenerator.class);
 		}

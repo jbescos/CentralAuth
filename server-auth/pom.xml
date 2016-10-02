@@ -9,10 +9,21 @@
 	<artifactId>server-auth</artifactId>
 	<packaging>war</packaging>
 	<groupId>es.tododev.server</groupId>
+	<properties>
+		<gwt.version>2.7.0</gwt.version>
+		<gwtp.version>1.5.3</gwtp.version>
+		<gin.version>2.1.2</gin.version>
+		<gwt.style>OBF</gwt.style>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>es.tododev.common</groupId>
 			<artifactId>common-auth</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>es.tododev.client</groupId>
+			<artifactId>client-auth</artifactId>
 			<version>1.0</version>
 		</dependency>
 		<dependency>
@@ -21,9 +32,9 @@
 			<version>5.1.6</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.jboss.logging</groupId>
-		    <artifactId>jboss-logging</artifactId>
-		    <version>3.3.0.Final</version>
+			<groupId>org.jboss.logging</groupId>
+			<artifactId>jboss-logging</artifactId>
+			<version>3.3.0.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -55,19 +66,19 @@
 		</dependency>
 		<!-- Jersey -->
 		<dependency>
-		    <groupId>org.glassfish.jersey.core</groupId>
-		    <artifactId>jersey-common</artifactId>
-		    <version>${jersey.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
-    		<artifactId>jersey-server</artifactId>
+			<artifactId>jersey-common</artifactId>
 			<version>${jersey.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.glassfish.jersey.containers</groupId>
-		    <artifactId>jersey-container-servlet</artifactId>
-		    <version>${jersey.version}</version>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet</artifactId>
+			<version>${jersey.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
@@ -78,7 +89,6 @@
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>${jersey.version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
@@ -92,5 +102,45 @@
 			<version>1.4.177</version>
 			<scope>test</scope>
 		</dependency>
+		
 	</dependencies>
+	<build>
+		<plugins>
+			<!-- Run in this folder mvn clean install tomcat7:redeploy -->
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<url>http://localhost:8080/manager/text</url>
+					<server>mytomcat</server>
+					<path>/server-auth</path>
+				</configuration>
+			</plugin>
+			<!-- GWT -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>${gwt.version}</version>
+				<configuration>
+					<strict>true</strict>
+					<testTimeOut>180</testTimeOut>
+					<mode>htmlunit</mode>
+					<includes>**/*GwtTest.java</includes>
+					<logLevel>INFO</logLevel>
+					<runTarget>index.html</runTarget>
+					<module>es.tododev.gwt.gwtp</module>
+					<extraJvmArgs>-Xmx512m -Xss1024k</extraJvmArgs>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

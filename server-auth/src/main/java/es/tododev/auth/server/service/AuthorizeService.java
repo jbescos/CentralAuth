@@ -14,9 +14,8 @@ import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.commons.dto.ReqAuthorizationDTO;
 import es.tododev.auth.commons.dto.RespAuthorizationDTO;
 import es.tododev.auth.server.bean.Application;
-import es.tododev.auth.server.bean.User;
+import es.tododev.auth.server.bean.UserApplication;
 import es.tododev.auth.server.bean.UserRoles;
-import es.tododev.auth.server.config.ContextParams;
 import es.tododev.auth.server.oam.Oam;
 
 public class AuthorizeService {
@@ -24,14 +23,12 @@ public class AuthorizeService {
 	private final static Logger log = LogManager.getLogger();
 	private final EntityManager em;
 	private final DigestGenerator digestGenerator;
-	private final ContextParams params;
 	private final Oam oam;
 	
 	@Inject
-	public AuthorizeService(EntityManager em, DigestGenerator digestGenerator, ContextParams params, Oam oam){
+	public AuthorizeService(EntityManager em, DigestGenerator digestGenerator, Oam oam){
 		this.em = em;
 		this.digestGenerator = digestGenerator;
-		this.params = params;
 		this.oam = oam;
 	}
 	
@@ -40,21 +37,22 @@ public class AuthorizeService {
 		String sign = null;
 		em.getTransaction().begin();
 		try{
-			List<User> users = oam.getUserBySharedDomainToken(in.getSharedDomainToken(), em);
-			if(users != null && users.size() == 1){
-				Application application = em.find(Application.class, in.getAppId());
-				User user = users.get(0);
-				UserRoles userAppRole = em.find(UserRoles.class, new UserRoles.PK(user.getUsername(), in.getAppId()));
-				if(application != null && checkRoleAndDate(user, userAppRole, in)){
+			List<UserApplication> userApplications = oam.getByColumn(Oam.APP_TOKEN, in.getAppToken(), em, UserApplication.class);
+			if(userApplications != null && userApplications.size() == 1){
+				UserApplication userApplication = userApplications.get(0);
+				out.setUsername(userApplication.getUsername());
+				UserRoles userAppRole = em.find(UserRoles.class, new UserRoles.PK(userApplication.getUsername(), userApplication.getAppId()));
+				if(checkRoleAndDate(userApplication, userAppRole, in)){
 					// update expire token
-					user.setExpireSharedDomainToken(new Date(user.getExpireSharedDomainToken().getTime()+params.getSharedDomainTokenExpireMillis()));
-					sign = digestGenerator.generateDigest(in.getAppId(), application.getPassword(), in.getSharedDomainToken(), in.getRole(), in.getRandom());
+					Application application = em.find(Application.class, userApplication.getAppId());
+					userApplication.setExpireDateToken(new Date(userApplication.getExpireDateToken().getTime()+application.getExpireMillisToken()));
+					sign = digestGenerator.generateDigest(in.getAppId(), application.getPassword(), in.getAppToken(), in.getRole(), in.getRandom());
 					log.info("Created a correct sign {}", sign);
 				}else{
 					log.warn("Not existing application for appId {}", in.getAppId());
 				}
 			}else{
-				log.warn("Not existing user for sharedDomainToken {}", in.getSharedDomainToken());
+				log.warn("Not existing user for AppToken {}", in.getAppToken());
 			}
 			em.getTransaction().commit();
 		}catch(Exception e){
@@ -72,9 +70,9 @@ public class AuthorizeService {
 		return out;
 	}
 	
-	private boolean checkRoleAndDate(User user, UserRoles userAppRole, ReqAuthorizationDTO in){
+	private boolean checkRoleAndDate(UserApplication userApplication, UserRoles userAppRole, ReqAuthorizationDTO in){
 		Date now = new Date();
-		if(now.getTime() < user.getExpireSharedDomainToken().getTime()){
+		if(now.getTime() < userApplication.getExpireDateToken().getTime()){
 			log.debug("Searching for role {} in {}", in.getRole(), userAppRole.getRoles());
 			for(String role : userAppRole.getRoles()){
 				if(role.toLowerCase().equals(in.getRole().toLowerCase())){
@@ -84,7 +82,7 @@ public class AuthorizeService {
 			}
 			log.warn("Hasn't the needed role");
 		}else{
-			log.info("sharedDomainToken has expired, user needs to log again");
+			log.info("App token has expired, user needs to log again");
 			// TODO remove cookie in client side
 		}
 		return false;

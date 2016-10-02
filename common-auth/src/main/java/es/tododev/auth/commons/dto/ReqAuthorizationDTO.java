@@ -3,7 +3,7 @@ package es.tododev.auth.commons.dto;
 public class ReqAuthorizationDTO {
 
 	private String appId;
-	private String sharedDomainToken;
+	private String appToken;
 	private String role;
 	private String random;
 	
@@ -19,11 +19,11 @@ public class ReqAuthorizationDTO {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	public String getSharedDomainToken() {
-		return sharedDomainToken;
+	public String getAppToken() {
+		return appToken;
 	}
-	public void setSharedDomainToken(String sharedDomainToken) {
-		this.sharedDomainToken = sharedDomainToken;
+	public void setAppToken(String appToken) {
+		this.appToken = appToken;
 	}
 	public String getRandom() {
 		return random;
