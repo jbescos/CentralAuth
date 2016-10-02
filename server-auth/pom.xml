@@ -9,12 +9,6 @@
 	<artifactId>server-auth</artifactId>
 	<packaging>war</packaging>
 	<groupId>es.tododev.server</groupId>
-	<properties>
-		<gwt.version>2.7.0</gwt.version>
-		<gwtp.version>1.5.3</gwtp.version>
-		<gin.version>2.1.2</gin.version>
-		<gwt.style>OBF</gwt.style>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>es.tododev.common</groupId>
@@ -116,30 +110,6 @@
 					<server>mytomcat</server>
 					<path>/server-auth</path>
 				</configuration>
-			</plugin>
-			<!-- GWT -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<version>${gwt.version}</version>
-				<configuration>
-					<strict>true</strict>
-					<testTimeOut>180</testTimeOut>
-					<mode>htmlunit</mode>
-					<includes>**/*GwtTest.java</includes>
-					<logLevel>INFO</logLevel>
-					<runTarget>index.html</runTarget>
-					<module>es.tododev.gwt.gwtp</module>
-					<extraJvmArgs>-Xmx512m -Xss1024k</extraJvmArgs>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-							<goal>test</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
