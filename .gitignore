@@ -3,14 +3,19 @@
 **/.classpath
 **/.settings/*
 **/bin/*
+**/target/*
+**/target-front/*
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 server-auth/src/main/frontend/node_modules/**
+server-auth/src/main/frontend/dist/**
+server-auth/src/main/frontend/node/**
 
 # Package Files #
 *.jar
 *.war
 *.ear
+*.log
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
