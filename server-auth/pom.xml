@@ -101,6 +101,7 @@
 	<build>
 		<plugins>
 			<!-- Run in this folder mvn clean install tomcat7:redeploy -->
+			<!-- Make sure you edit: /usr/share/maven3/conf/settings.xml -->
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
