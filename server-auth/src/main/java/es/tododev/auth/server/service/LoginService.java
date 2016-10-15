@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -120,7 +121,9 @@ public class LoginService {
 	}
 	
 	public List<String> register(String username, String password, String appId) throws LoginException{
-		em.getTransaction().begin();
+		List<String> urls = Collections.emptyList();
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
 		try{
 			User user = em.find(User.class, username);
 			if(user == null){
@@ -128,13 +131,15 @@ public class LoginService {
 				user.setPassword(digestGenerator.digest(password));
 				user.setUsername(username);
 				em.persist(user);
-				return loginOperations(username, password, appId);
+				log.debug("User {} registered", username);
+				urls = loginOperations(username, password, appId);
 			}else{
 				log.warn("This user already exists");
 			}
-			em.getTransaction().commit();
+			tx.commit();
+			return urls;
 		}catch(Exception e){
-			em.getTransaction().rollback();
+			tx.rollback();
 			log.error("Persist exception", e);
 		}finally{
 			em.clear();

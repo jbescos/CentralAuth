@@ -1,18 +1,27 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {Subscription } from 'rxjs';
 import {Router, ActivatedRoute} from '@angular/router';
+import {RestService} from '../shared/rest.service';
+import {Dto} from '../shared/rest.login.dto';
 
 @Component({
   selector: 'my-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+  providers: [RestService]
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
+  loginUrls: Dto;
   private subscription: Subscription;
   appId: string;
 
-  constructor(private activatedRoute: ActivatedRoute) {
+  constructor(private activatedRoute: ActivatedRoute, private restService: RestService) {
+  }
+
+  clicked(username:string, password:string) {
+    console.log("Clicked register with user: "+username);
+    this.restService.login(username, password, this.appId).subscribe(loginUrls => this.loginUrls = loginUrls);
   }
 
   ngOnInit() {

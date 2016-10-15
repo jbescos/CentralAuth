@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core'
 import { Http, Response, URLSearchParams } from '@angular/http';
 import { Observable }     from 'rxjs/Observable';
-import { Dto } from './dto.logreg';
+import { Dto } from './rest.login.dto';
  
 @Injectable()
-export class LogregService{
+export class RestService{
  
-   endpoint_url:string = "server-auth/rest/auth/user/cookiemgr/login/register/";
+   register_url:string = "server-auth/rest/auth/user/cookiemgr/login/register/";
+   login_url:string = "server-auth/rest/auth/user/cookiemgr/login/login/";
    main_app_id:string = "main";
  
    constructor(private http: Http){
@@ -34,6 +35,20 @@ export class LogregService{
        }else{
            app = appId;
        }
-       return this.http.get(this.endpoint_url+app, {search: params}).map(res => this.extractData(res));
+       return this.http.get(this.register_url+app, {search: params}).map(res => this.extractData(res));
    }
+
+   login(username:string, password:string, appId:string): Observable<Dto>{
+       let params = new URLSearchParams();
+       params.set('username', username);
+       params.set('password', password);
+       var app = this.main_app_id;
+       if(appId == null){
+           app = this.main_app_id;
+       }else{
+           app = appId;
+       }
+       return this.http.get(this.login_url+app, {search: params}).map(res => this.extractData(res));
+   }
+
 }

@@ -72,5 +72,9 @@ public class Application implements Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+	@Override
+	public String toString() {
+		return "Application [appId=" + appId + ", password=" + password + ", url=" + url + ", expireMillisToken="
+				+ expireMillisToken + ", description=" + description + ", userRoles=" + userRoles + "]";
+	}
 }

@@ -2,6 +2,7 @@ package es.tododev.auth.server.service;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,15 +31,18 @@ public class GroupApplicationsService {
 	}
 	
 	public void create(String groupId, String username, String url){
-		em.getTransaction().begin();
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
 		try{
 			GroupApplications groupApplications = new GroupApplications();
 			groupApplications.setGroupId(groupId);
 			Application application = applicationService.createApplication(groupApplications, groupId, uuid.create(), url, EXPIRE_COOKIE, DESCRIPTION);
+			log.debug("Persisting "+groupApplications);
 			em.persist(groupApplications);
+			tx.commit();
 			rolesService.addRole(username, application.getAppId(), Constants.ADMIN_ROLE);
 		}catch(Exception e){
-			em.getTransaction().rollback();
+			tx.rollback();
 			log.error("Persist exception", e);
 		}finally{
 			em.clear();

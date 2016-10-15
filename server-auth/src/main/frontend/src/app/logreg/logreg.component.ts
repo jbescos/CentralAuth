@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {Subscription } from 'rxjs';
 import {Router, ActivatedRoute} from '@angular/router';
-import {LogregService} from './logreg.service';
-import {Dto} from './dto.logreg';
+import {RestService} from '../shared/rest.service';
+import {Dto} from '../shared/rest.login.dto';
 
 @Component({
   selector: 'my-logreg',
   templateUrl: './logreg.component.html',
   styleUrls: ['./logreg.component.scss'],
-  providers: [LogregService]
+  providers: [RestService]
 })
 export class LogregComponent implements OnInit, OnDestroy {
 
@@ -17,12 +17,12 @@ export class LogregComponent implements OnInit, OnDestroy {
   appId: string;
   mode = 'Observable';
 
-  constructor(private activatedRoute: ActivatedRoute, private logRegservice: LogregService) {
+  constructor(private activatedRoute: ActivatedRoute, private restService: RestService) {
   }
 
   clicked(username:string, password1:string, password2:string) {
     console.log("Clicked register with user: "+username);
-    this.logRegservice.register(username, password1, password2, this.appId).subscribe(loginUrls => this.loginUrls = loginUrls);
+    this.restService.register(username, password1, password2, this.appId).subscribe(loginUrls => this.loginUrls = loginUrls);
   }
 
   ngOnInit() {

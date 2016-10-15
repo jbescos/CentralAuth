@@ -31,5 +31,10 @@ public class GroupApplications implements Serializable {
 	public void setApplications(List<Application> applications) {
 		this.applications = applications;
 	}
+	@Override
+	public String toString() {
+		return "GroupApplications [groupId=" + groupId + ", applications=" + applications + "]";
+	}
+	
 	
 }

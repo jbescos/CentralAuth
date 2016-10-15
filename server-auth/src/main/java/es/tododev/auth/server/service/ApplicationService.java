@@ -41,6 +41,7 @@ public class ApplicationService {
 		application.setExpireMillisToken(expireMillis);
 		application.setUrl(url);
 		application.setDescription(description);
+		application.setGroupApplications(group);
 		group.getApplications().add(application);
 		return application;
 	}

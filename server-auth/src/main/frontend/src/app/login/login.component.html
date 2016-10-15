@@ -1,12 +1,12 @@
 <h2>Login <a class="subhead">{{appId}}</a></h2>
 <ul class="one columns">
     <li class="field">
-        User name: <input type="text" class="field text input"/>
+        User name: <input #username type="text" class="field text input"/>
     </li>
     <li class="field">
-        Password: <input type="password" class="field text input"/>
+        Password: <input #password type="password" class="field text input"/>
     </li>
     <li>
-     <button class="pretty large default btn clickable field" type="button">Login</button> 
+     <button (click)="clicked(username.value, password.value)" class="pretty large default btn clickable field" type="button">Login</button> 
     </li>
 </ul>
