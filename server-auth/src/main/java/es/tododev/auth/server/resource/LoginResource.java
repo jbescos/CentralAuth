@@ -51,6 +51,7 @@ public class LoginResource {
 				List<String> urls = loginService.register(username, password1, appId);
 				return Response.ok(urls).build();
 			} catch (LoginException e) {
+				log.error("User "+username, e);
 				return Response.status(403).build();
 			}
 		}
