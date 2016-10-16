@@ -1,5 +1,7 @@
 package es.tododev.auth.server;
 
+import java.util.logging.Level;
+
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -8,14 +10,14 @@ import javax.persistence.Persistence;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.ServerProperties;
 
 import es.tododev.auth.commons.CookieManager;
 import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.server.oam.Oam;
+import es.tododev.auth.server.provider.AllowCrossDomain;
 import es.tododev.auth.server.provider.EntityManagerProvider;
 import es.tododev.auth.server.provider.ExceptionLogger;
 import es.tododev.auth.server.provider.UUIDgenerator;
@@ -37,13 +39,23 @@ public class RestConfig extends ResourceConfig {
 			register(injection);
 		}
 		packages(AuthorizeResource.class.getPackage().getName());
-		register(new LoggingFilter(java.util.logging.Logger.getLogger(LoggingFilter.class.getName()), true));
+		LoggingFeature logger = new LoggingFeature(new java.util.logging.Logger("Logger", "logger"){
+			@Override
+			public void log(Level level, String msg) {
+				log.debug(msg);
+			}
+
+			@Override
+			public boolean isLoggable(Level level) {
+				return true;
+			}
+		});
+		register(logger);
 		
-		property(ServerProperties.TRACING, "ALL");
+//		property(ServerProperties.TRACING, "ALL");
 		register(ExceptionLogger.class);
 		register(JacksonFeature.class);
-//		register(MvcFeature.class);
-//		property(MvcFeature.TEMPLATE_BASE_PATH, "/");
+		register(AllowCrossDomain.class);
 		log.info("Jersey has been loaded");
 	}
 
