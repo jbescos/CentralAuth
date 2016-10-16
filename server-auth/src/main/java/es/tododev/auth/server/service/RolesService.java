@@ -57,8 +57,7 @@ public class RolesService {
 		return dto;
 	}
 	
-	public void addRole(EntityManager em, Application app, String username, String role){
-		User user = em.find(User.class, username);
+	public UserRoles addRole(User user, Application app, String username, String ... roles){
 		if(user != null && app != null){
 			UserRoles userRoles = em.find(UserRoles.class, new UserRoles.PK(username, app.getAppId()));
 			if(userRoles == null){
@@ -69,19 +68,23 @@ public class RolesService {
 				userRoles.setUser(user);
 				user.getUserRoles().add(userRoles);
 				app.getUserRoles().add(userRoles);
-				em.persist(userRoles);
 			}
-			userRoles.getRoles().add(role);
+			for(String role : roles){
+				userRoles.getRoles().add(role);
+			}
+			return userRoles;
 		}else{
-			throw new IllegalArgumentException("The user "+username+" or the application doesn't exist");
+			throw new IllegalArgumentException("The user "+username+" or the application "+app+" doesn't exist");
 		}
 	}
 	
-	public void addRole(String username, String appId, String role){
+	public void addRole(String username, String appId, String ... roles){
 		em.getTransaction().begin();
 		try{
 			Application app = em.find(Application.class, appId);
-			addRole(em, app, username, role);
+			User user = em.find(User.class, username);
+			UserRoles userRoles = addRole(user, app, username, roles);
+			em.persist(userRoles);
 			em.getTransaction().commit();
 		}catch(Exception e){
 			em.getTransaction().rollback();

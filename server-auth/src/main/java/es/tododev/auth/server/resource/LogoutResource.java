@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import es.tododev.auth.commons.Constants;
 import es.tododev.auth.server.service.LoginService;
 
-@Path(Constants.LOGOUT_PATH)
+@Path(Constants.LOGOUT_CALLBACK_PATH)
 public class LogoutResource {
 
 	private final LoginService loginService;

@@ -12,7 +12,7 @@ import es.tododev.auth.server.bean.User;
 
 public class EntityManagerProviderTest {
 	
-	private final EntityManagerProvider provider = new EntityManagerProvider(Persistence.createEntityManagerFactory("persistenceConfig"));
+	private final EmFactoryProvider provider = new EmFactoryProvider(Persistence.createEntityManagerFactory("persistenceConfig"));
 	
 	@Test
 	public void entityManagerNotNull(){

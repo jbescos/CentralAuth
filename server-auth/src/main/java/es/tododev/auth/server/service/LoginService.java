@@ -24,6 +24,7 @@ import es.tododev.auth.commons.Constants;
 import es.tododev.auth.commons.CookieManager;
 import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.server.bean.Application;
+import es.tododev.auth.server.bean.GroupApplications;
 import es.tododev.auth.server.bean.User;
 import es.tododev.auth.server.bean.UserApplication;
 import es.tododev.auth.server.oam.Oam;
@@ -39,9 +40,10 @@ public class LoginService {
 	private final HttpServletRequest request;
 	private final Oam oam;
 	private final UUIDgenerator uuid;
+	private final GroupApplicationsService groupApplicationsService;
 
 	@Inject
-	public LoginService(UUIDgenerator uuid, EntityManager em, DigestGenerator digestGenerator, @Context HttpServletResponse response, @Context HttpServletRequest request, CookieManager cookieMgr, Oam oam){
+	public LoginService(UUIDgenerator uuid, EntityManager em, DigestGenerator digestGenerator, @Context HttpServletResponse response, @Context HttpServletRequest request, CookieManager cookieMgr, Oam oam, GroupApplicationsService groupApplicationsService){
 		this.em = em;
 		this.digestGenerator = digestGenerator;
 		this.response = response;
@@ -49,13 +51,15 @@ public class LoginService {
 		this.request = request;
 		this.oam = oam;
 		this.uuid = uuid;
+		this.groupApplicationsService = groupApplicationsService;
 	}
 	
 	public List<String> successLogin(String username, String password, String appId) throws LoginException, Exception{
 		List<String> urls = Collections.emptyList();
 		em.getTransaction().begin();
 		try{
-			urls = loginOperations(username, password, appId);
+			final String MAIN_APP = Constants.getMainAPP(username);
+			urls = loginOperations(username, password, appId, MAIN_APP);
 			em.getTransaction().commit();
 		}catch(LoginException e){
 			em.getTransaction().commit();
@@ -100,20 +104,25 @@ public class LoginService {
 		return urls;
 	}
 	
-	private List<String> loginOperations(String username, String password, String appId) throws LoginException{
+	private List<String> loginOperations(String username, String password, String ... appIds) throws LoginException{
 		User user = em.find(User.class, username);
+		List<String> urls = new ArrayList<>();
 		if(user != null && user.getPassword().equals(digestGenerator.digest(password))){
-			if(appId != null){
-				Application application = em.find(Application.class, appId);
-				if(application != null){
-					removeAppTokens(application, username);
-					return createAppTokensAndResponse(application, username);
-				}else{
-					log.warn("App Id {} doesn't exist", appId);
-					throw new LoginException("The application "+appId+" doesn't exist in the system.");
+			if(appIds != null){
+				for(String appId : appIds){
+					if(appId != null){
+						Application application = em.find(Application.class, appId);
+						if(application != null){
+							removeAppTokens(application, username);
+							urls.addAll(createAppTokensAndResponse(application, username));
+						}else{
+							log.warn("App Id {} doesn't exist", appId);
+							throw new LoginException("The application "+appId+" doesn't exist in the system.");
+						}
+					}
 				}
 			}
-			return Collections.emptyList();
+			return urls;
 		}else{
 			log.info("User not match");
 		}
@@ -131,8 +140,11 @@ public class LoginService {
 				user.setPassword(digestGenerator.digest(password));
 				user.setUsername(username);
 				em.persist(user);
+				final String MAIN_APP = Constants.getMainAPP(username);
+				GroupApplications group = groupApplicationsService.create(user, MAIN_APP, username, Constants.APP_URL);
+				em.persist(group);
+				urls = loginOperations(username, password, appId, MAIN_APP);
 				log.debug("User {} registered", username);
-				urls = loginOperations(username, password, appId);
 			}else{
 				log.warn("This user already exists");
 			}
@@ -177,7 +189,7 @@ public class LoginService {
 	}
 	
 	private String getUrl(String appToken, Application app, boolean login){
-		String path = login ? app.getUrl()+Constants.LOGIN_PATH : app.getUrl()+Constants.LOGOUT_PATH;
+		String path = login ? app.getUrl()+Constants.LOGIN_CALLBACK_PATH : app.getUrl()+Constants.LOGOUT_CALLBACK_PATH;
 		UriBuilder builder = new JerseyUriBuilder().path(path);
 		if(appToken != null)
 			builder.queryParam(Constants.APP_COOKIE, appToken);

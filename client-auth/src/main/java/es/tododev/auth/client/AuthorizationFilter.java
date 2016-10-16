@@ -38,7 +38,7 @@ public abstract class AuthorizationFilter implements Filter{
 	private static final String AUTH_SERVER_URL = "AuthServerURL";
 	private String authorizationURL;
 	
-	protected abstract IAppProvider getProvider(HttpServletRequest request);
+	protected abstract IAppProvider getProvider(HttpServletRequest request, String appToken);
 	
 	@Override
 	public void destroy() {
@@ -50,7 +50,7 @@ public abstract class AuthorizationFilter implements Filter{
 		HttpServletRequest request = ((HttpServletRequest)arg0);
 		String appToken = getAppToken(request);
 		if(appToken != null){
-			IAppProvider appProvider = getProvider(request);
+			IAppProvider appProvider = getProvider(request, appToken);
 			String role = extractRole(request);
 			ReqAuthorizationDTO req = createDTO(appToken, role, appProvider.getAppId());
 			RespAuthorizationDTO resp = authorize(req, RespAuthorizationDTO.class, authorizationURL);
@@ -76,13 +76,14 @@ public abstract class AuthorizationFilter implements Filter{
 	
 	private String getAppToken(HttpServletRequest request){
 		Cookie[] cookies = request.getCookies();
-		if(cookies != null)
+		if(cookies != null){
 			for(Cookie cookie : cookies){
 				if(Constants.APP_COOKIE.equals(cookie.getName())){
 					return cookie.getValue();
 				}
 			}
-		return null;
+		}
+		return request.getParameter(Constants.APP_COOKIE);
 	}
 	
 	private String extractRole(HttpServletRequest request) throws ServletException{

@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -21,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 import es.tododev.auth.commons.Constants;
 import es.tododev.auth.server.service.LoginService;
 
-@Path(Constants.LOGIN_PATH)
+@Path(Constants.LOGIN_RESOURCE)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class LoginResource {
@@ -35,8 +34,8 @@ public class LoginResource {
 	}
 	
 	@GET
-	@Path("/login/{appId}")
-	public Response login(@PathParam("appId") String appId, @QueryParam("username") String username, @QueryParam("password") String password) throws Exception{
+	@Path("/login")
+	public Response login(@QueryParam("appId") String appId, @QueryParam("username") String username, @QueryParam("password") String password) throws Exception{
 		log.debug("User "+username+" doing login");
 		try {
 			List<String> urls = loginService.successLogin(username, password, appId);
@@ -48,8 +47,8 @@ public class LoginResource {
 	}
 	
 	@GET
-	@Path("/register/{appId}")
-	public Response register(@PathParam("appId") String appId, @QueryParam("username") String username, @QueryParam("password1") String password1, @QueryParam("password2") String password2) throws ServletException, IOException {
+	@Path("/register")
+	public Response register(@QueryParam("appId") String appId, @QueryParam("username") String username, @QueryParam("password1") String password1, @QueryParam("password2") String password2) throws ServletException, IOException {
 		if(password1.equals(password2)){
 			try {
 				List<String> urls = loginService.register(username, password1, appId);

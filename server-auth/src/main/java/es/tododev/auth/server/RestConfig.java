@@ -18,7 +18,7 @@ import es.tododev.auth.commons.CookieManager;
 import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.server.oam.Oam;
 import es.tododev.auth.server.provider.AllowCrossDomain;
-import es.tododev.auth.server.provider.EntityManagerProvider;
+import es.tododev.auth.server.provider.EmFactoryProvider;
 import es.tododev.auth.server.provider.ExceptionLogger;
 import es.tododev.auth.server.provider.UUIDgenerator;
 import es.tododev.auth.server.resource.AuthorizeResource;
@@ -70,7 +70,7 @@ public class RestConfig extends ResourceConfig {
 			bind(Persistence.createEntityManagerFactory(PERSISTENCE_MODEL)).to(EntityManagerFactory.class);
 			bind(AuthorizeService.class).to(AuthorizeService.class);
 			bind(DigestGenerator.class).to(DigestGenerator.class).in(Singleton.class);
-			bindFactory(EntityManagerProvider.class).to(EntityManager.class);
+			bindFactory(EmFactoryProvider.class).to(EntityManager.class);
 			bind(LoginService.class).to(LoginService.class);
 			bind(Oam.class).to(Oam.class);
 			bind(RolesService.class).to(RolesService.class);

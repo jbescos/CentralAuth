@@ -45,7 +45,7 @@ import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.server.RestConfig;
 import es.tododev.auth.server.dto.RolesDTO;
 import es.tododev.auth.server.oam.Oam;
-import es.tododev.auth.server.provider.EntityManagerProvider;
+import es.tododev.auth.server.provider.EmFactoryProvider;
 import es.tododev.auth.server.provider.ExceptionLogger;
 import es.tododev.auth.server.provider.UUIDgenerator;
 import es.tododev.auth.server.rules.LoggerRule;
@@ -118,7 +118,7 @@ public class RolesResourceTest extends JerseyTest {
 		formParams.add("password1", PASSWORD);
 		formParams.add("password2", PASSWORD);
 		Entity<MultivaluedMap<String, String>> form = Entity.entity(formParams, MediaType.APPLICATION_FORM_URLENCODED);
-		Response response = target(Constants.LOGIN_PATH+"/register").request().post(form);
+		Response response = target(Constants.LOGIN_RESOURCE+"/register").request().post(form);
 		assertEquals(Status.OK, response.getStatus());
 	}
 	
@@ -135,7 +135,7 @@ public class RolesResourceTest extends JerseyTest {
 				bind(Persistence.createEntityManagerFactory("persistenceConfig")).to(EntityManagerFactory.class);
 				bind(AuthorizeService.class).to(AuthorizeService.class);
 				bind(DigestGenerator.class).to(DigestGenerator.class).in(Singleton.class);
-				bindFactory(EntityManagerProvider.class).to(EntityManager.class);
+				bindFactory(EmFactoryProvider.class).to(EntityManager.class);
 				bind(LoginService.class).to(LoginService.class);
 				bind(Oam.class).to(Oam.class);
 				bind(RolesService.class).to(RolesService.class);

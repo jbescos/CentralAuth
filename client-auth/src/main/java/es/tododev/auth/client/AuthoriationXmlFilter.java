@@ -11,7 +11,7 @@ public class AuthoriationXmlFilter extends AuthorizationFilter {
 	private IAppProvider appProvider;
 	
 	@Override
-	protected IAppProvider getProvider(HttpServletRequest request) {
+	protected IAppProvider getProvider(HttpServletRequest request, String appToken) {
 		return appProvider;
 	}
 	

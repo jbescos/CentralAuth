@@ -10,13 +10,13 @@ import org.apache.logging.log4j.Logger;
 import org.glassfish.hk2.api.Factory;
 
 @Singleton
-public class EntityManagerProvider implements Factory<EntityManager>{
+public class EmFactoryProvider implements Factory<EntityManager>{
 
 	private final static Logger log = LogManager.getLogger();
 	private final EntityManagerFactory emf;
 	
 	@Inject
-	public EntityManagerProvider(EntityManagerFactory emf){
+	public EmFactoryProvider(EntityManagerFactory emf){
 		this.emf = emf;
 	}
 	

@@ -3,11 +3,17 @@ package es.tododev.auth.server;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 
 import es.tododev.auth.client.AuthorizationFilter;
 import es.tododev.auth.client.IAppProvider;
 import es.tododev.auth.server.bean.Application;
+import es.tododev.auth.server.bean.UserApplication;
 
 public class AuthorizationEmFilter extends AuthorizationFilter{
 
@@ -22,10 +28,16 @@ public class AuthorizationEmFilter extends AuthorizationFilter{
 	}
 	
 	@Override
-	protected IAppProvider getProvider(HttpServletRequest request) {
-		String appId = extractAppId(request);
+	protected IAppProvider getProvider(HttpServletRequest request, String appToken) {
 		EntityManager em = emf.createEntityManager();
-		Application application = em.find(Application.class, appId);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<UserApplication> cq = cb.createQuery(UserApplication.class);
+		Root<UserApplication> root = cq.from(UserApplication.class);
+		cq.select(root);
+		// FIXME
+		TypedQuery<UserApplication> query = em.createQuery(cq).setParameter(3, appToken);
+		UserApplication userApp = query.getSingleResult();
+		final Application application = em.find(Application.class, userApp.getAppId());
 		em.clear();
 		em.close();
 		return new IAppProvider() {
@@ -38,21 +50,6 @@ public class AuthorizationEmFilter extends AuthorizationFilter{
 				return application.getAppId();
 			}
 		};
-	}
-	
-	private String extractAppId(HttpServletRequest request){
-		final String POST_BLOCK = "auth";
-		String[] blocks = request.getPathInfo().split("/");
-		for(int i=0;i<blocks.length;i++){
-			if(POST_BLOCK.equals(blocks[i])){
-				if(i>0){
-					return blocks[i-1];
-				}else{
-					throw new IllegalArgumentException("The path "+request.getPathInfo()+" doesn't contain the app id before the /auth section");
-				}
-			}
-		}
-		throw new IllegalArgumentException("The path "+request.getPathInfo()+" doesn't contain the /auth section");
 	}
 	
 }

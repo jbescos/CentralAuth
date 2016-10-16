@@ -6,9 +6,8 @@ import { Dto } from './rest.login.dto';
 @Injectable()
 export class RestService{
  
-   register_url:string = "server-auth/rest/auth/user/cookiemgr/login/register/";
-   login_url:string = "server-auth/rest/auth/user/cookiemgr/login/login/";
-   main_app_id:string = "main";
+   register_url:string = "server-auth/rest/account/register/";
+   login_url:string = "server-auth/rest/account/login/";
  
    constructor(private http: Http){
    }
@@ -29,26 +28,20 @@ export class RestService{
        params.set('username', username);
        params.set('password1', password1);
        params.set('password2', password2);
-       var app = this.main_app_id;
-       if(appId == null){
-           app = this.main_app_id;
-       }else{
-           app = appId;
+       if(appId != null){
+        params.set('appId', appId);
        }
-       return this.http.get(this.register_url+app, {search: params}).map(res => this.extractData(res));
+       return this.http.get(this.register_url, {search: params}).map(res => this.extractData(res));
    }
 
    login(username:string, password:string, appId:string): Observable<Dto>{
        let params = new URLSearchParams();
        params.set('username', username);
        params.set('password', password);
-       var app = this.main_app_id;
-       if(appId == null){
-           app = this.main_app_id;
-       }else{
-           app = appId;
+       if(appId != null){
+        params.set('appId', appId);
        }
-       return this.http.get(this.login_url+app, {search: params}).map(res => this.extractData(res));
+       return this.http.get(this.login_url, {search: params}).map(res => this.extractData(res));
    }
 
 }

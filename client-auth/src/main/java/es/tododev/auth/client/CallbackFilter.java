@@ -32,11 +32,11 @@ public class CallbackFilter implements Filter{
 		HttpServletRequest req = (HttpServletRequest)arg0;
 		HttpServletResponse resp = (HttpServletResponse)arg1;
 		CookieManager mgr = new CookieManager();
-		String sharedDomainToken = req.getParameter(Constants.APP_COOKIE);
-		if(sharedDomainToken != null){
+		String appCookie = req.getParameter(Constants.APP_COOKIE);
+		if(appCookie != null){
 			// create
-			mgr.saveCookie(sharedDomainToken, resp);
-			log.info("Creating the cookie with value {}", sharedDomainToken);
+			mgr.saveCookie(appCookie, resp);
+			log.info("Creating the cookie with value {}", appCookie);
 		}else{
 			// remove
 			mgr.removeCookie(req, resp);
