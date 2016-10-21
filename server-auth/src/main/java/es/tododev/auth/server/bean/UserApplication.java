@@ -16,6 +16,7 @@ import javax.persistence.Table;
 @Table(indexes = {@Index(name="appTokenIdx", columnList = "appToken")})
 public class UserApplication implements Serializable {
 
+	public final static String GET_BY_APP_TOKEN = "GET_BY_APP_TOKEN";
 	@Id
 	private String username;
 	@Id

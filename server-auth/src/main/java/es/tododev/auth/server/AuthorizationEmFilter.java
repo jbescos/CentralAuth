@@ -4,19 +4,20 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.tododev.auth.client.AuthorizationFilter;
 import es.tododev.auth.client.IAppProvider;
 import es.tododev.auth.server.bean.Application;
 import es.tododev.auth.server.bean.UserApplication;
+import es.tododev.auth.server.oam.Oam;
 
 public class AuthorizationEmFilter extends AuthorizationFilter{
 
+	private final static Logger log = LogManager.getLogger();
 	private final EntityManagerFactory emf;
 	
 	public AuthorizationEmFilter(EntityManagerFactory emf){
@@ -30,14 +31,10 @@ public class AuthorizationEmFilter extends AuthorizationFilter{
 	@Override
 	protected IAppProvider getProvider(HttpServletRequest request, String appToken) {
 		EntityManager em = emf.createEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<UserApplication> cq = cb.createQuery(UserApplication.class);
-		Root<UserApplication> root = cq.from(UserApplication.class);
-		cq.select(root);
-		// FIXME
-		TypedQuery<UserApplication> query = em.createQuery(cq).setParameter(3, appToken);
-		UserApplication userApp = query.getSingleResult();
-		final Application application = em.find(Application.class, userApp.getAppId());
+		log.debug("Loading app by "+appToken);
+		Oam oam = new Oam();
+		UserApplication userApplication = oam.getByColumn(Oam.APP_TOKEN, appToken, em, UserApplication.class).stream().findFirst().get();
+		final Application application = em.find(Application.class, userApplication.getAppId());
 		em.clear();
 		em.close();
 		return new IAppProvider() {

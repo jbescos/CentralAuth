@@ -45,6 +45,7 @@ import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.server.RestConfig;
 import es.tododev.auth.server.dto.RolesDTO;
 import es.tododev.auth.server.oam.Oam;
+import es.tododev.auth.server.oam.OamTest;
 import es.tododev.auth.server.provider.EmFactoryProvider;
 import es.tododev.auth.server.provider.ExceptionLogger;
 import es.tododev.auth.server.provider.UUIDgenerator;
@@ -132,7 +133,7 @@ public class RolesResourceTest extends JerseyTest {
 			
 			@Override
 			protected void configure() {
-				bind(Persistence.createEntityManagerFactory("persistenceConfig")).to(EntityManagerFactory.class);
+				bind(OamTest.emf).to(EntityManagerFactory.class);
 				bind(AuthorizeService.class).to(AuthorizeService.class);
 				bind(DigestGenerator.class).to(DigestGenerator.class).in(Singleton.class);
 				bindFactory(EmFactoryProvider.class).to(EntityManager.class);
