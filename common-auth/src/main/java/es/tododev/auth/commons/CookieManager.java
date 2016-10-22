@@ -15,6 +15,7 @@ public class CookieManager {
 		Cookie cookie = new Cookie(Constants.APP_COOKIE, appToken);
 		cookie.setPath(request.getContextPath());
 		cookie.setMaxAge((int)(Constants.EXPIRE_COOKIE/1000));
+		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
 		log.info("Saving cookie {}", cookie);
 	}
