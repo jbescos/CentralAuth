@@ -4,6 +4,7 @@ public class RespAuthorizationDTO {
 
 	private String sign;
 	private String username;
+	private String newCookie;
 	
 	public String getSign() {
 		return sign;
@@ -16,6 +17,12 @@ public class RespAuthorizationDTO {
 	}
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	public String getNewCookie() {
+		return newCookie;
+	}
+	public void setNewCookie(String newCookie) {
+		this.newCookie = newCookie;
 	}
 	
 }

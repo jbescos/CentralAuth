@@ -19,7 +19,7 @@ public class Constants {
 	public static final String ROLES_PATH = "/{groupId}/auth/"+ADMIN_ROLE+"/roles";
 	public static final String APPLICATION_PATH = "/{groupId}/auth/"+ADMIN_ROLE+"/application";
 	public static final String LOGIN_RESOURCE = "/account";
-	public static final String COOKIE_RESOURCE = "/auth/user/cookiemgr";
+	public static final String LOGIN_CALLBACK_RESOURCE = "/auth/user/cookiemgr";
 	
 	public static String getMainAPP(String userName){
 		return Constants.MAIN_APP+"_"+userName;

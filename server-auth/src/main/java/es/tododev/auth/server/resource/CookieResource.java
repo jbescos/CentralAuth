@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import es.tododev.auth.commons.Constants;
 
-@Path(Constants.COOKIE_RESOURCE)
+@Path(Constants.LOGIN_CALLBACK_RESOURCE)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class CookieResource {

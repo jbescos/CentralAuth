@@ -17,6 +17,7 @@ import es.tododev.auth.server.bean.Application;
 import es.tododev.auth.server.bean.UserApplication;
 import es.tododev.auth.server.bean.UserRoles;
 import es.tododev.auth.server.oam.Oam;
+import es.tododev.auth.server.provider.UUIDgenerator;
 
 public class AuthorizeService {
 
@@ -24,12 +25,14 @@ public class AuthorizeService {
 	private final EntityManager em;
 	private final DigestGenerator digestGenerator;
 	private final Oam oam;
+	private final UUIDgenerator uuid;
 	
 	@Inject
-	public AuthorizeService(EntityManager em, DigestGenerator digestGenerator, Oam oam){
+	public AuthorizeService(EntityManager em, DigestGenerator digestGenerator, Oam oam, UUIDgenerator uuid){
 		this.em = em;
 		this.digestGenerator = digestGenerator;
 		this.oam = oam;
+		this.uuid = uuid;
 	}
 	
 	public RespAuthorizationDTO authorize(ReqAuthorizationDTO in){
@@ -46,6 +49,8 @@ public class AuthorizeService {
 					// update expire token
 					Application application = em.find(Application.class, userApplication.getAppId());
 					userApplication.setExpireDateToken(new Date(userApplication.getExpireDateToken().getTime()+application.getExpireMillisToken()));
+					userApplication.setAppToken(uuid.create());
+					out.setNewCookie(userApplication.getAppToken());
 					sign = digestGenerator.generateDigest(in.getAppId(), application.getPassword(), in.getAppToken(), in.getRole(), in.getRandom());
 					log.info("Created a correct sign {}", sign);
 				}else{

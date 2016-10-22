@@ -30,14 +30,6 @@
 		<filter-name>AuthorizationFilter</filter-name>
 		<url-pattern>/rest/auth/*</url-pattern>
 	</filter-mapping>
-	<filter>
-		<filter-name>CallbackFilter</filter-name>
-		<filter-class>es.tododev.auth.client.CallbackFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>CallbackFilter</filter-name>
-		<url-pattern>/rest/auth/user/cookiemgr/*</url-pattern>
-	</filter-mapping>
 
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>

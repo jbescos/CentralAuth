@@ -26,6 +26,7 @@ import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
 import es.tododev.auth.commons.Constants;
+import es.tododev.auth.commons.CookieManager;
 import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.commons.dto.ReqAuthorizationDTO;
 import es.tododev.auth.commons.dto.RespAuthorizationDTO;
@@ -50,15 +51,18 @@ public abstract class AuthorizationFilter implements Filter{
 		HttpServletRequest request = ((HttpServletRequest)arg0);
 		String appToken = getAppToken(request);
 		if(appToken != null){
+			CookieManager cookieMgr = new CookieManager();
 			IAppProvider appProvider = getProvider(request, appToken);
 			String role = extractRole(request);
 			ReqAuthorizationDTO req = createDTO(appToken, role, appProvider.getAppId());
 			RespAuthorizationDTO resp = authorize(req, RespAuthorizationDTO.class, authorizationURL);
 			if(digestGenerator.generateDigest(appProvider.getAppId(), appProvider.getAppPassword(),  appToken, role, req.getRandom()).equals(resp.getSign())){
 				arg0.setAttribute(Constants.USER_NAME_KEY, resp.getUsername());
+				cookieMgr.saveCookie(resp.getNewCookie(), request, (HttpServletResponse)arg1);
 				arg2.doFilter(arg0, arg1);
 			}else{
 				log.warn(appToken+ " not authorized");
+				cookieMgr.removeCookie(request, (HttpServletResponse)arg1);
 				sendError(arg1, 403);
 			}
 		}else{
