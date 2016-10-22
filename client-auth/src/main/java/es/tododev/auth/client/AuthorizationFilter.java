@@ -70,20 +70,30 @@ public abstract class AuthorizationFilter implements Filter{
 	private <IN, OUT> OUT authorize(IN input, Class<OUT> out, String authorizationURL){
 		Entity<IN> in = Entity.entity(input, MediaType.APPLICATION_JSON);
 		Client client = ClientBuilder.newBuilder().withConfig(clientConfig).build();
+		log.info("Doing authorization to: "+authorizationURL);
 		Response response = client.target(authorizationURL).request().accept(MediaType.APPLICATION_JSON).post(in);
-		return response.readEntity(out);
+		OUT dtoOut = response.readEntity(out);
+		log.info("Response HTTP code "+response.getStatus()+" from the authorizator. "+dtoOut);
+		return dtoOut;
 	}
 	
 	private String getAppToken(HttpServletRequest request){
-		Cookie[] cookies = request.getCookies();
-		if(cookies != null){
-			for(Cookie cookie : cookies){
-				if(Constants.APP_COOKIE.equals(cookie.getName())){
-					return cookie.getValue();
+		String appToken = request.getParameter(Constants.APP_COOKIE);
+		if(appToken == null){
+			Cookie[] cookies = request.getCookies();
+			if(cookies != null){
+				for(Cookie cookie : cookies){
+					if(Constants.APP_COOKIE.equals(cookie.getName())){
+						appToken = cookie.getValue();
+						break;
+					}
 				}
 			}
+			log.debug("Obtained appToken in COOKIE: "+Constants.APP_COOKIE+": "+appToken);
+		}else{
+			log.debug("Obtained appToken in REQUEST: "+Constants.APP_COOKIE+": "+appToken);
 		}
-		return request.getParameter(Constants.APP_COOKIE);
+		return appToken;
 	}
 	
 	private String extractRole(HttpServletRequest request) throws ServletException{

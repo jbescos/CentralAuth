@@ -4,12 +4,19 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class CookieManager {
 
-	public void saveCookie(String appToken, HttpServletResponse response){
+	private final static Logger log = LogManager.getLogger();
+	
+	public void saveCookie(String appToken, HttpServletRequest request, HttpServletResponse response){
 		Cookie cookie = new Cookie(Constants.APP_COOKIE, appToken);
-//		cookie.setPath("/");
+		cookie.setPath(request.getContextPath());
+		cookie.setMaxAge((int)(Constants.EXPIRE_COOKIE/1000));
 		response.addCookie(cookie);
+		log.info("Saving cookie {}", cookie);
 	}
 	
 	public String removeCookie(HttpServletRequest request, HttpServletResponse response){
@@ -21,6 +28,7 @@ public class CookieManager {
 	                cookie.setValue(null);
 	                cookie.setMaxAge(0);
 	                response.addCookie(cookie);
+	                log.info("Removing cookie {}", cookie);
 	                return appToken;
 	            }
 	        }

@@ -17,7 +17,6 @@ public class GroupApplicationsService {
 	private final UUIDgenerator uuid;
 	private final ApplicationService applicationService;
 	private final RolesService rolesService;
-	private final static long EXPIRE_COOKIE = 10*1000*60;
 	private final static String DESCRIPTION = "This is the administration panel to manage the roles and the applications";
 	
 	@Inject
@@ -30,7 +29,7 @@ public class GroupApplicationsService {
 	public GroupApplications create(User user, String groupId, String username, String url){
 		GroupApplications groupApplications = new GroupApplications();
 		groupApplications.setGroupId(groupId);
-		Application application = applicationService.createApplication(groupApplications, groupId, uuid.create(), url, EXPIRE_COOKIE, DESCRIPTION);
+		Application application = applicationService.createApplication(groupApplications, groupId, uuid.create(), url, Constants.EXPIRE_COOKIE, DESCRIPTION);
 		rolesService.addRole(user, application, username, Constants.ADMIN_ROLE, Constants.USER_ROLE);
 		log.debug("Group application: {}", groupApplications);
 		return groupApplications;

@@ -10,8 +10,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Oam {
 	
+	private final static Logger log = LogManager.getLogger();
 	public final static String APP_TOKEN = "appToken";
 	public final static String APP_ID = "appId";
 	public final static String GROUP_ID = "groupId";
@@ -23,6 +27,7 @@ public class Oam {
 		Root<T> enhancedUser = criteria.from(entity);
 		Predicate[] predicates = columnValue.entrySet().stream().map(entry -> cb.equal(enhancedUser.get(entry.getKey()), entry.getValue())).toArray(size -> new Predicate[size]);
 		List<T> userApplication = em.createQuery(criteria.select(enhancedUser).where(predicates)).getResultList();
+		log.debug(userApplication.size()+" rows obtained from "+entity.getCanonicalName()+" with args "+columnValue);
 		return userApplication;
 	}
 	

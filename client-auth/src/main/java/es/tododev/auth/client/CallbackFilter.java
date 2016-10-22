@@ -35,7 +35,7 @@ public class CallbackFilter implements Filter{
 		String appCookie = req.getParameter(Constants.APP_COOKIE);
 		if(appCookie != null){
 			// create
-			mgr.saveCookie(appCookie, resp);
+			mgr.saveCookie(appCookie, req, resp);
 			log.info("Creating the cookie with value {}", appCookie);
 		}else{
 			// remove
