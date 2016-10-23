@@ -20,7 +20,6 @@
 		<module>common-auth</module>
 		<module>client-auth</module>
 		<module>server-auth</module>
-		<module>sample-app</module>
 	</modules>
 
 	<build>

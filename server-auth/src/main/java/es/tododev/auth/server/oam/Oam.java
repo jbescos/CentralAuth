@@ -13,6 +13,9 @@ import javax.persistence.criteria.Root;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import es.tododev.auth.server.bean.Application;
+import es.tododev.auth.server.bean.UserApplication;
+
 public class Oam {
 	
 	private final static Logger log = LogManager.getLogger();
@@ -35,6 +38,13 @@ public class Oam {
 		Map<String,String> columns = new HashMap<>();
 		columns.put(column, value);
 		return getByColumns(columns, em, entity);
+	}
+	
+	public Application getApplicationByAppToken(EntityManager em, String appToken){
+		Oam oam = new Oam();
+		UserApplication userApplication = oam.getByColumn(Oam.APP_TOKEN, appToken, em, UserApplication.class).stream().findFirst().get();
+		final Application application = em.find(Application.class, userApplication.getAppId());
+		return application;
 	}
 	
 }

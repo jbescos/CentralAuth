@@ -39,7 +39,7 @@ public class RestConfig extends ResourceConfig {
 			register(injection);
 		}
 		packages(AuthorizeResource.class.getPackage().getName());
-		LoggingFeature logger = new LoggingFeature(new java.util.logging.Logger("Logger", "logger"){
+		LoggingFeature logger = new LoggingFeature(new java.util.logging.Logger("ServerLogger", "logger"){
 			@Override
 			public void log(Level level, String msg) {
 				log.debug(msg);

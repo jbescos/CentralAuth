@@ -16,8 +16,8 @@ public class Constants {
 	public static final String AUTHORIZE_PATH = "/authorize";
 	public static final String LOGIN_CALLBACK_PATH = "/rest/auth/"+USER_ROLE+"/cookiemgr/login";
 	public static final String LOGOUT_CALLBACK_PATH = "/rest/auth/"+USER_ROLE+"/cookiemgr/logout";
-	public static final String ROLES_PATH = "/{groupId}/auth/"+ADMIN_ROLE+"/roles";
-	public static final String APPLICATION_PATH = "/{groupId}/auth/"+ADMIN_ROLE+"/application";
+	public static final String ROLES_RESOURCE = "/auth/"+ADMIN_ROLE+"/roles/{groupId}";
+	public static final String APPLICATION_RESOURCE = "/auth/"+ADMIN_ROLE+"/application";
 	public static final String LOGIN_RESOURCE = "/account";
 	public static final String LOGIN_CALLBACK_RESOURCE = "/auth/user/cookiemgr";
 	

@@ -85,7 +85,7 @@ public class RolesResourceTest extends JerseyTest {
 		addUserToApp();
 		register();
 		
-		Response response = target(Constants.ROLES_PATH).queryParam("token", SHARED_DOMAIN_TOKEN).queryParam("appId", APP_ID).request().get();
+		Response response = target(Constants.ROLES_RESOURCE).queryParam("token", SHARED_DOMAIN_TOKEN).queryParam("appId", APP_ID).request().get();
 		assertEquals(Status.OK, response.getStatus());
 		RolesDTO dto = response.readEntity(RolesDTO.class);
 		assertNotNull(dto);
@@ -100,7 +100,7 @@ public class RolesResourceTest extends JerseyTest {
 		formParams.add("appId", APP_ID);
 		formParams.add("role", ROLE);
 		Entity<MultivaluedMap<String, String>> form = Entity.entity(formParams, MediaType.APPLICATION_FORM_URLENCODED);
-		Response response = target(Constants.ROLES_PATH).request().post(form);
+		Response response = target(Constants.ROLES_RESOURCE).request().post(form);
 		assertEquals(Status.OK, response.getStatus());
 	}
 	
@@ -109,7 +109,7 @@ public class RolesResourceTest extends JerseyTest {
 		formParams.add("appId", APP_ID);
 		formParams.add("password", "pass app");
 		Entity<MultivaluedMap<String, String>> form = Entity.entity(formParams, MediaType.APPLICATION_FORM_URLENCODED);
-		Response response = target(Constants.APPLICATION_PATH).request().post(form);
+		Response response = target(Constants.APPLICATION_RESOURCE).request().post(form);
 		assertEquals(Status.OK, response.getStatus());
 	}
 	

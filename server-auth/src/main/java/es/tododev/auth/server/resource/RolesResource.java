@@ -17,7 +17,7 @@ import es.tododev.auth.commons.Constants;
 import es.tododev.auth.server.dto.RolesDTO;
 import es.tododev.auth.server.service.RolesService;
 
-@Path(Constants.ROLES_PATH)
+@Path(Constants.ROLES_RESOURCE)
 public class RolesResource {
 
 	private final RolesService rolesService;

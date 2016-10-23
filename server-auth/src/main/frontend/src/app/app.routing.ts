@@ -4,13 +4,15 @@ import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { LoginComponent } from './login/login.component';
 import { LogregComponent } from './logreg/logreg.component';
+import { WebmasterComponent } from './webmaster/webmaster.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
   { path: 'about', component: AboutComponent},
   { path: 'logreg', component: LogregComponent},
-  { path: 'login', component: LoginComponent}
+  { path: 'login', component: LoginComponent},
+  { path: 'webmaster', component: WebmasterComponent}
 ];
 
 export const routing = RouterModule.forRoot(routes);

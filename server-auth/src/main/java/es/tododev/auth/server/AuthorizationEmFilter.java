@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import es.tododev.auth.client.AuthorizationFilter;
 import es.tododev.auth.client.IAppProvider;
 import es.tododev.auth.server.bean.Application;
-import es.tododev.auth.server.bean.UserApplication;
 import es.tododev.auth.server.oam.Oam;
 
 public class AuthorizationEmFilter extends AuthorizationFilter{
@@ -32,8 +31,7 @@ public class AuthorizationEmFilter extends AuthorizationFilter{
 		EntityManager em = emf.createEntityManager();
 		log.debug("Loading app by "+appToken);
 		Oam oam = new Oam();
-		UserApplication userApplication = oam.getByColumn(Oam.APP_TOKEN, appToken, em, UserApplication.class).stream().findFirst().get();
-		final Application application = em.find(Application.class, userApplication.getAppId());
+		final Application application = oam.getApplicationByAppToken(em, appToken);
 		em.clear();
 		em.close();
 		return new IAppProvider() {

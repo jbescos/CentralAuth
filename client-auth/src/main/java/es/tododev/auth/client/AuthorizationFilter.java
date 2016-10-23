@@ -22,7 +22,6 @@ import javax.ws.rs.core.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
 import es.tododev.auth.commons.Constants;
@@ -143,7 +142,6 @@ public abstract class AuthorizationFilter implements Filter{
 			throw new ServletException("Can't start filter because there is no algorithm to make the digest", e);
 		}
 		clientConfig.register(JacksonFeature.class);
-		clientConfig.register(new LoggingFilter(java.util.logging.Logger.getLogger(LoggingFilter.class.getName()), true));
 		
 		log.info(getClass().getCanonicalName()+" was successfully loaded");
 	}
