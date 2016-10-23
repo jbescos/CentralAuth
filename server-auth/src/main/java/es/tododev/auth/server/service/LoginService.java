@@ -69,9 +69,6 @@ public class LoginService {
 			em.getTransaction().rollback();
 			log.error("Persist exception", e);
 			throw e;
-		}finally{
-			em.clear();
-			em.close();
 		}
 		return urls;
 	}
@@ -153,9 +150,6 @@ public class LoginService {
 		}catch(Exception e){
 			tx.rollback();
 			log.error("Persist exception", e);
-		}finally{
-			em.clear();
-			em.close();
 		}
 		throw new LoginException("Can not register");
 	}
@@ -181,9 +175,6 @@ public class LoginService {
 		}catch(Exception e){
 			em.getTransaction().rollback();
 			log.error("Persist exception", e);
-		}finally{
-			em.clear();
-			em.close();
 		}
 		return Collections.emptyList();
 	}

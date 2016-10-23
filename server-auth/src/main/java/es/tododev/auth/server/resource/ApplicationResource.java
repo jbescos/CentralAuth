@@ -3,18 +3,25 @@ package es.tododev.auth.server.resource;
 import java.net.URISyntaxException;
 
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import es.tododev.auth.commons.Constants;
+import es.tododev.auth.server.dto.ApplicationDto;
 import es.tododev.auth.server.service.ApplicationService;
 
 @Path(Constants.APPLICATION_RESOURCE)
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class ApplicationResource {
 	
 	private final ApplicationService applicationService;
@@ -39,6 +46,12 @@ public class ApplicationResource {
 	public Response delete(@CookieParam(Constants.APP_COOKIE) String appToken, @QueryParam("appId") String appId){
 		applicationService.deleteApplication(appToken, appId);
 		return Response.ok(appId).build();
+	}
+	
+	@PUT
+	public Response update(@CookieParam(Constants.APP_COOKIE) String appToken, ApplicationDto dto){
+		applicationService.update(appToken, dto);
+		return Response.ok(dto.getAppId()).build();
 	}
 	
 }

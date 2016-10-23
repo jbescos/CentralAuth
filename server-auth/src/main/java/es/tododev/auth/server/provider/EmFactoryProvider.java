@@ -1,7 +1,6 @@
 package es.tododev.auth.server.provider;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -9,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.hk2.api.Factory;
 
-@Singleton
 public class EmFactoryProvider implements Factory<EntityManager>{
 
 	private final static Logger log = LogManager.getLogger();
@@ -22,14 +20,16 @@ public class EmFactoryProvider implements Factory<EntityManager>{
 	
 	@Override
 	public void dispose(EntityManager arg0) {
-		log.info("Closing entity manager factory");
-		emf.close();
+		log.debug("Closing entity manager: "+arg0.hashCode());
+		arg0.clear();
+		arg0.close();
 	}
 
 	@Override
 	public EntityManager provide() {
-		log.debug("Providing new instance of EntityManager");
-		return emf.createEntityManager();
+		EntityManager em = emf.createEntityManager();
+		log.debug("Providing new instance of EntityManager: "+em.hashCode());
+		return em;
 	}
 
 }

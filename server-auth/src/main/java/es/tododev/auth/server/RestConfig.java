@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.process.internal.RequestScoped;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import es.tododev.auth.commons.CookieManager;
@@ -70,7 +71,7 @@ public class RestConfig extends ResourceConfig {
 			bind(Persistence.createEntityManagerFactory(PERSISTENCE_MODEL)).to(EntityManagerFactory.class);
 			bind(AuthorizeService.class).to(AuthorizeService.class);
 			bind(DigestGenerator.class).to(DigestGenerator.class).in(Singleton.class);
-			bindFactory(EmFactoryProvider.class).to(EntityManager.class);
+			bindFactory(EmFactoryProvider.class).to(EntityManager.class).proxy(true).proxyForSameScope(false).in(RequestScoped.class);
 			bind(LoginService.class).to(LoginService.class);
 			bind(Oam.class).to(Oam.class);
 			bind(RolesService.class).to(RolesService.class);

@@ -50,9 +50,6 @@ public class RolesService {
 			dto.setStatus(RolesDTO.ERR);
 			em.getTransaction().rollback();
 			log.error("Persist exception", e);
-		}finally{
-			em.clear();
-			em.close();
 		}
 		return dto;
 	}
@@ -89,9 +86,6 @@ public class RolesService {
 		}catch(Exception e){
 			em.getTransaction().rollback();
 			log.error("Persist exception", e);
-		}finally{
-			em.clear();
-			em.close();
 		}
 	}
 	

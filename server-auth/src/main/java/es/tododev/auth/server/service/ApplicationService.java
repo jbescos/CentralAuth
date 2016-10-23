@@ -37,46 +37,52 @@ public class ApplicationService {
 		}catch(Exception e){
 			em.getTransaction().rollback();
 			log.error("Persist exception", e);
-		}finally{
-			em.clear();
-			em.close();
+		}
+	}
+	
+	private void validateOperation(GroupApplications group, String appId){
+		if(group.getGroupId().equals(appId)){
+			throw new IllegalArgumentException(appId+" can not be removed because it is the main application too");
+		}else if(!group.getApplications().stream().map(app -> app.getAppId()).collect(Collectors.toList()).contains(appId)){
+			throw new IllegalArgumentException(appId+" doesn't exist or doesn't belong to the group id "+group.getGroupId());	
 		}
 	}
 	
 	public void deleteApplication(String appToken, String appId){
 		Oam oam = new Oam();
 		GroupApplications group = oam.getApplicationByAppToken(em, appToken).getGroupApplications();
-		if(!group.getGroupId().equals(appId)){
-			if(group.getApplications().stream().map(app -> app.getAppId()).collect(Collectors.toList()).contains(appId)){
-				em.getTransaction().begin();
-				try{
-					Application application = em.find(Application.class, appId);
-					em.remove(application);
-					em.getTransaction().commit();
-				}catch(Exception e){
-					em.getTransaction().rollback();
-					log.error("Persist exception", e);
-				}finally{
-					em.clear();
-					em.close();
-				}
-			}else{
-				throw new IllegalArgumentException(appId+" doesn't exist or doesn't belong to the group id "+group.getGroupId());
-			}
-		}else{
-			throw new IllegalArgumentException(appId+" can not be removed because it is the main application too");
+		validateOperation(group, appId);
+		em.getTransaction().begin();
+		try{
+			Application application = em.find(Application.class, appId);
+			em.remove(application);
+			em.getTransaction().commit();
+		}catch(Exception e){
+			em.getTransaction().rollback();
+			log.error("Persist exception", e);
 		}
 	}
 	
 	public List<ApplicationDto> getApplications(String appToken){
+		Oam oam = new Oam();
+		GroupApplications group = oam.getApplicationByAppToken(em, appToken).getGroupApplications();
+		List<ApplicationDto> applications = group.getApplications().stream().map(app -> new ApplicationDto(app.getAppId(), app.getUrl(), app.getDescription())).collect(Collectors.toList());
+		return applications;
+	}
+	
+	public void update(String appToken, ApplicationDto dto){
+		Oam oam = new Oam();
+		GroupApplications group = oam.getApplicationByAppToken(em, appToken).getGroupApplications();
+		validateOperation(group, dto.getAppId());
+		em.getTransaction().begin();
 		try{
-			Oam oam = new Oam();
-			GroupApplications group = oam.getApplicationByAppToken(em, appToken).getGroupApplications();
-			List<ApplicationDto> applications = group.getApplications().stream().map(app -> new ApplicationDto(app.getAppId(), app.getUrl(), app.getDescription())).collect(Collectors.toList());
-			return applications;
-		}finally{
-			em.clear();
-			em.close();
+			Application application = em.find(Application.class, dto.getAppId());
+			application.setDescription(dto.getDescription());
+			application.setUrl(dto.getUrl());
+			em.getTransaction().commit();
+		}catch(Exception e){
+			em.getTransaction().rollback();
+			log.error("Persist exception", e);
 		}
 	}
 	
