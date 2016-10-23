@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import es.tododev.auth.commons.DigestGenerator;
 import es.tododev.auth.commons.dto.ReqAuthorizationDTO;
 import es.tododev.auth.commons.dto.RespAuthorizationDTO;
+import es.tododev.auth.server.aop.Transactional;
 import es.tododev.auth.server.bean.Application;
 import es.tododev.auth.server.bean.UserApplication;
 import es.tododev.auth.server.bean.UserRoles;
@@ -22,47 +23,39 @@ import es.tododev.auth.server.provider.UUIDgenerator;
 public class AuthorizeService {
 
 	private final static Logger log = LogManager.getLogger();
-	private final EntityManager em;
 	private final DigestGenerator digestGenerator;
 	private final Oam oam;
 	private final UUIDgenerator uuid;
 	
 	@Inject
-	public AuthorizeService(EntityManager em, DigestGenerator digestGenerator, Oam oam, UUIDgenerator uuid){
-		this.em = em;
+	public AuthorizeService(DigestGenerator digestGenerator, Oam oam, UUIDgenerator uuid){
 		this.digestGenerator = digestGenerator;
 		this.oam = oam;
 		this.uuid = uuid;
 	}
 	
-	public RespAuthorizationDTO authorize(ReqAuthorizationDTO in){
+	@Transactional
+	public RespAuthorizationDTO authorize(EntityManager em, ReqAuthorizationDTO in){
 		RespAuthorizationDTO out = new RespAuthorizationDTO();
 		String sign = null;
-		em.getTransaction().begin();
-		try{
-			List<UserApplication> userApplications = oam.getByColumn(Oam.APP_TOKEN, in.getAppToken(), em, UserApplication.class);
-			if(userApplications != null && userApplications.size() == 1){
-				UserApplication userApplication = userApplications.get(0);
-				out.setUsername(userApplication.getUsername());
-				UserRoles userAppRole = em.find(UserRoles.class, new UserRoles.PK(userApplication.getUsername(), userApplication.getAppId()));
-				if(checkRoleAndDate(userApplication, userAppRole, in)){
-					// update expire token
-					Application application = em.find(Application.class, userApplication.getAppId());
-					userApplication.setExpireDateToken(new Date(userApplication.getExpireDateToken().getTime()+application.getExpireMillisToken()));
-					userApplication.setAppToken(uuid.create());
-					out.setNewCookie(userApplication.getAppToken());
-					sign = digestGenerator.generateDigest(in.getAppId(), application.getPassword(), in.getAppToken(), in.getRole(), in.getRandom());
-					log.info("Created a correct sign {}", sign);
-				}else{
-					log.warn("Not existing application for appId {}", in.getAppId());
-				}
+		List<UserApplication> userApplications = oam.getByColumn(Oam.APP_TOKEN, in.getAppToken(), em, UserApplication.class);
+		if(userApplications != null && userApplications.size() == 1){
+			UserApplication userApplication = userApplications.get(0);
+			out.setUsername(userApplication.getUsername());
+			UserRoles userAppRole = em.find(UserRoles.class, new UserRoles.PK(userApplication.getUsername(), userApplication.getAppId()));
+			if(checkRoleAndDate(userApplication, userAppRole, in)){
+				// update expire token
+				Application application = em.find(Application.class, userApplication.getAppId());
+				userApplication.setExpireDateToken(new Date(userApplication.getExpireDateToken().getTime()+application.getExpireMillisToken()));
+				userApplication.setAppToken(uuid.create());
+				out.setNewCookie(userApplication.getAppToken());
+				sign = digestGenerator.generateDigest(in.getAppId(), application.getPassword(), in.getAppToken(), in.getRole(), in.getRandom());
+				log.info("Created a correct sign {}", sign);
 			}else{
-				log.warn("Not existing user for AppToken {}", in.getAppToken());
+				log.warn("Not existing application for appId {}", in.getAppId());
 			}
-			em.getTransaction().commit();
-		}catch(Exception e){
-			em.getTransaction().rollback();
-			log.error("Persist exception", e);
+		}else{
+			log.warn("Not existing user for AppToken {}", in.getAppToken());
 		}
 		if(sign == null){
 			log.warn("User is not logged, creating a fake signature");

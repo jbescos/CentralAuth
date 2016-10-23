@@ -9,6 +9,7 @@ import javax.persistence.Persistence;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.glassfish.hk2.api.InterceptionService;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.logging.LoggingFeature;
@@ -17,6 +18,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import es.tododev.auth.commons.CookieManager;
 import es.tododev.auth.commons.DigestGenerator;
+import es.tododev.auth.server.aop.HK2InterceptionService;
 import es.tododev.auth.server.oam.Oam;
 import es.tododev.auth.server.provider.AllowCrossDomain;
 import es.tododev.auth.server.provider.EmFactoryProvider;
@@ -79,6 +81,7 @@ public class RestConfig extends ResourceConfig {
 			bind(GroupApplicationsService.class).to(GroupApplicationsService.class);
 			bind(CookieManager.class).to(CookieManager.class);
 			bind(UUIDgenerator.class).to(UUIDgenerator.class);
+			bind(HK2InterceptionService.class).to(InterceptionService.class).in(Singleton.class);
 		}
 
 	}

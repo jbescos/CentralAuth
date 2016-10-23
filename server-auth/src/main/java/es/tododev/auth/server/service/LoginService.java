@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +22,7 @@ import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
 import es.tododev.auth.commons.Constants;
 import es.tododev.auth.commons.CookieManager;
 import es.tododev.auth.commons.DigestGenerator;
+import es.tododev.auth.server.aop.Transactional;
 import es.tododev.auth.server.bean.Application;
 import es.tododev.auth.server.bean.GroupApplications;
 import es.tododev.auth.server.bean.User;
@@ -33,7 +33,6 @@ import es.tododev.auth.server.provider.UUIDgenerator;
 public class LoginService {
 	
 	private final static Logger log = LogManager.getLogger();
-	private final EntityManager em;
 	private final DigestGenerator digestGenerator;
 	private final HttpServletResponse response;
 	private final CookieManager cookieMgr;
@@ -43,8 +42,7 @@ public class LoginService {
 	private final GroupApplicationsService groupApplicationsService;
 
 	@Inject
-	public LoginService(UUIDgenerator uuid, EntityManager em, DigestGenerator digestGenerator, @Context HttpServletResponse response, @Context HttpServletRequest request, CookieManager cookieMgr, Oam oam, GroupApplicationsService groupApplicationsService){
-		this.em = em;
+	public LoginService(UUIDgenerator uuid, DigestGenerator digestGenerator, @Context HttpServletResponse response, @Context HttpServletRequest request, CookieManager cookieMgr, Oam oam, GroupApplicationsService groupApplicationsService){
 		this.digestGenerator = digestGenerator;
 		this.response = response;
 		this.cookieMgr = cookieMgr;
@@ -54,26 +52,15 @@ public class LoginService {
 		this.groupApplicationsService = groupApplicationsService;
 	}
 	
-	public List<String> successLogin(String username, String password, String appId) throws LoginException, Exception{
+	@Transactional
+	public List<String> successLogin(EntityManager em, String username, String password, String appId) throws LoginException {
 		List<String> urls = Collections.emptyList();
-		em.getTransaction().begin();
-		try{
-			final String MAIN_APP = Constants.getMainAPP(username);
-			urls = loginOperations(username, password, appId, MAIN_APP);
-			em.getTransaction().commit();
-		}catch(LoginException e){
-			em.getTransaction().commit();
-			log.error("Login failure", e);
-			throw e;
-		}catch(Exception e){
-			em.getTransaction().rollback();
-			log.error("Persist exception", e);
-			throw e;
-		}
+		final String MAIN_APP = Constants.getMainAPP(username);
+		urls = loginOperations(em, username, password, appId, MAIN_APP);
 		return urls;
 	}
 	
-	private void removeAppTokens(Application application, String username){
+	private void removeAppTokens(EntityManager em, Application application, String username){
 		Map<String,String> columnValue = new HashMap<>();
 		columnValue.put(Oam.GROUP_ID, application.getGroupApplications().getGroupId());
 		columnValue.put(Oam.USER_NAME, username);
@@ -83,7 +70,7 @@ public class LoginService {
 		}
 	}
 	
-	private List<String> createAppTokensAndResponse(Application application, String username){
+	private List<String> createAppTokensAndResponse(EntityManager em, Application application, String username){
 		long currentMillis = System.currentTimeMillis();
 		List<String> urls = new ArrayList<>();
 		for(Application app : application.getGroupApplications().getApplications()){
@@ -101,7 +88,7 @@ public class LoginService {
 		return urls;
 	}
 	
-	private List<String> loginOperations(String username, String password, String ... appIds) throws LoginException{
+	private List<String> loginOperations(EntityManager em, String username, String password, String ... appIds) throws LoginException{
 		User user = em.find(User.class, username);
 		List<String> urls = new ArrayList<>();
 		if(user != null && user.getPassword().equals(digestGenerator.digest(password))){
@@ -110,8 +97,8 @@ public class LoginService {
 					if(appId != null){
 						Application application = em.find(Application.class, appId);
 						if(application != null){
-							removeAppTokens(application, username);
-							urls.addAll(createAppTokensAndResponse(application, username));
+							removeAppTokens(em, application, username);
+							urls.addAll(createAppTokensAndResponse(em, application, username));
 						}else{
 							log.warn("App Id {} doesn't exist", appId);
 							throw new LoginException("The application "+appId+" doesn't exist in the system.");
@@ -126,55 +113,41 @@ public class LoginService {
 		throw new LoginException("Invalid user, password or both.");
 	}
 	
-	public List<String> register(String username, String password, String appId) throws LoginException{
+	@Transactional
+	public List<String> register(EntityManager em, String username, String password, String appId) throws LoginException {
 		List<String> urls = Collections.emptyList();
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-		try{
-			User user = em.find(User.class, username);
-			if(user == null){
-				user = new User();
-				user.setPassword(digestGenerator.digest(password));
-				user.setUsername(username);
-				em.persist(user);
-				final String MAIN_APP = Constants.getMainAPP(username);
-				GroupApplications group = groupApplicationsService.create(user, MAIN_APP, username, Constants.APP_URL);
-				em.persist(group);
-				urls = loginOperations(username, password, appId, MAIN_APP);
-				log.debug("User {} registered", username);
-			}else{
-				log.warn("This user already exists");
-			}
-			tx.commit();
-			return urls;
-		}catch(Exception e){
-			tx.rollback();
-			log.error("Persist exception", e);
+		User user = em.find(User.class, username);
+		if(user == null){
+			user = new User();
+			user.setPassword(digestGenerator.digest(password));
+			user.setUsername(username);
+			em.persist(user);
+			final String MAIN_APP = Constants.getMainAPP(username);
+			GroupApplications group = groupApplicationsService.create(em, user, MAIN_APP, username, Constants.APP_URL);
+			em.persist(group);
+			urls = loginOperations(em, username, password, appId, MAIN_APP);
+			log.debug("User {} registered", username);
+		}else{
+			log.warn("This user already exists");
 		}
-		throw new LoginException("Can not register");
+		return urls;
 	}
 	
-	public List<String> logout() throws LoginException{
+	@Transactional
+	public List<String> logout(EntityManager em) throws LoginException{
 		String appSystemToken = cookieMgr.getCookieValue(Constants.APP_COOKIE, request);
 		cookieMgr.removeCookie(request, response);
-		em.getTransaction().begin();
-		try{
-			List<UserApplication> userApplications = oam.getByColumn(Oam.APP_TOKEN, appSystemToken, em, UserApplication.class);
-			if(userApplications != null && userApplications.size() == 1){
-				UserApplication userApplication = userApplications.get(0);
-				Application application = em.find(Application.class, userApplication.getAppId());
-				removeAppTokens(application, userApplication.getUsername());
-				List<String> urls = new ArrayList<>();
-				for(Application app : application.getGroupApplications().getApplications()){
-					String url = getUrl(null, app, false);
-					urls.add(url);
-				}
-				return urls;
+		List<UserApplication> userApplications = oam.getByColumn(Oam.APP_TOKEN, appSystemToken, em, UserApplication.class);
+		if(userApplications != null && userApplications.size() == 1){
+			UserApplication userApplication = userApplications.get(0);
+			Application application = em.find(Application.class, userApplication.getAppId());
+			removeAppTokens(em, application, userApplication.getUsername());
+			List<String> urls = new ArrayList<>();
+			for(Application app : application.getGroupApplications().getApplications()){
+				String url = getUrl(null, app, false);
+				urls.add(url);
 			}
-			em.getTransaction().commit();
-		}catch(Exception e){
-			em.getTransaction().rollback();
-			log.error("Persist exception", e);
+			return urls;
 		}
 		return Collections.emptyList();
 	}

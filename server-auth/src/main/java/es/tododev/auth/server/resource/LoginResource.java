@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.security.auth.login.LoginException;
 import javax.servlet.ServletException;
 import javax.ws.rs.Consumes;
@@ -18,6 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import es.tododev.auth.commons.Constants;
+import es.tododev.auth.server.aop.Transactional;
 import es.tododev.auth.server.service.LoginService;
 
 @Path(Constants.LOGIN_RESOURCE)
@@ -27,10 +29,12 @@ public class LoginResource {
 
 	private final static Logger log = LogManager.getLogger();
 	private final LoginService loginService;
+	private final EntityManager em;
 	
 	@Inject
-	public LoginResource(LoginService loginService){
+	public LoginResource(EntityManager em, LoginService loginService){
 		this.loginService = loginService;
+		this.em = em;
 	}
 	
 	@GET
@@ -38,7 +42,7 @@ public class LoginResource {
 	public Response login(@QueryParam("appId") String appId, @QueryParam("username") String username, @QueryParam("password") String password) throws Exception{
 		log.debug("User "+username+" doing login");
 		try {
-			List<String> urls = loginService.successLogin(username, password, appId);
+			List<String> urls = loginService.successLogin(em, username, password, appId);
 			return Response.ok(urls).build();
 		} catch (LoginException e) {
 			return Response.status(403).build();
@@ -51,7 +55,7 @@ public class LoginResource {
 	public Response register(@QueryParam("appId") String appId, @QueryParam("username") String username, @QueryParam("password1") String password1, @QueryParam("password2") String password2) throws ServletException, IOException {
 		if(password1.equals(password2)){
 			try {
-				List<String> urls = loginService.register(username, password1, appId);
+				List<String> urls = loginService.register(em, username, password1, appId);
 				return Response.ok(urls).build();
 			} catch (LoginException e) {
 				log.error("User "+username, e);

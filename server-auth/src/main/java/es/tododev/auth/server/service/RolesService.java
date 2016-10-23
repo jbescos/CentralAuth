@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import es.tododev.auth.server.aop.Transactional;
 import es.tododev.auth.server.bean.Application;
 import es.tododev.auth.server.bean.User;
 import es.tododev.auth.server.bean.UserApplication;
@@ -21,40 +22,31 @@ import es.tododev.auth.server.oam.Oam;
 public class RolesService {
 
 	private final static Logger log = LogManager.getLogger();
-	private final EntityManager em;
 	private final Oam oam;
 	
 	@Inject
-	public RolesService(EntityManager em, Oam oam){
-		this.em = em;
+	public RolesService(Oam oam){
 		this.oam = oam;
 	}
 	
-	public RolesDTO getRoles(String appToken, String appId){
+	@Transactional
+	public RolesDTO getRoles(EntityManager em, String appToken, String appId){
 		RolesDTO dto = new RolesDTO();
 		dto.setProperties(new HashMap<String, String>());
 		dto.setStatus(RolesDTO.KO);
-		em.getTransaction().begin();
-		try{
-			List<UserApplication> userApplications = oam.getByColumn(Oam.APP_TOKEN, appToken, em, UserApplication.class);
-			if(userApplications != null && userApplications.size() == 1){
-				UserApplication userApplication = userApplications.get(0);
-				UserRoles userRoles = em.find(UserRoles.class, new UserRoles.PK(userApplication.getUsername(), appId));
-				if(userRoles != null){
-					dto.setRoles(new HashSet<String>(userRoles.getRoles()));
-					dto.setStatus(RolesDTO.OK);
-				}
+		List<UserApplication> userApplications = oam.getByColumn(Oam.APP_TOKEN, appToken, em, UserApplication.class);
+		if(userApplications != null && userApplications.size() == 1){
+			UserApplication userApplication = userApplications.get(0);
+			UserRoles userRoles = em.find(UserRoles.class, new UserRoles.PK(userApplication.getUsername(), appId));
+			if(userRoles != null){
+				dto.setRoles(new HashSet<String>(userRoles.getRoles()));
+				dto.setStatus(RolesDTO.OK);
 			}
-			em.getTransaction().commit();
-		}catch(Exception e){
-			dto.setStatus(RolesDTO.ERR);
-			em.getTransaction().rollback();
-			log.error("Persist exception", e);
 		}
 		return dto;
 	}
 	
-	public UserRoles addRole(User user, Application app, String username, String ... roles){
+	public UserRoles addRole(EntityManager em, User user, Application app, String username, String ... roles){
 		if(user != null && app != null){
 			UserRoles userRoles = em.find(UserRoles.class, new UserRoles.PK(username, app.getAppId()));
 			if(userRoles == null){
@@ -75,18 +67,12 @@ public class RolesService {
 		}
 	}
 	
-	public void addRole(String username, String appId, String ... roles){
-		em.getTransaction().begin();
-		try{
-			Application app = em.find(Application.class, appId);
-			User user = em.find(User.class, username);
-			UserRoles userRoles = addRole(user, app, username, roles);
-			em.persist(userRoles);
-			em.getTransaction().commit();
-		}catch(Exception e){
-			em.getTransaction().rollback();
-			log.error("Persist exception", e);
-		}
+	@Transactional
+	public void addRole(EntityManager em, String username, String appId, String ... roles){
+		Application app = em.find(Application.class, appId);
+		User user = em.find(User.class, username);
+		UserRoles userRoles = addRole(em, user, app, username, roles);
+		em.persist(userRoles);
 	}
 	
 }

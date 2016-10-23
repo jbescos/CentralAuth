@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.security.auth.login.LoginException;
 import javax.servlet.ServletException;
 import javax.ws.rs.GET;
@@ -17,16 +18,18 @@ import es.tododev.auth.server.service.LoginService;
 public class LogoutResource {
 
 	private final LoginService loginService;
+	private final EntityManager em;
 	
 	@Inject
-	public LogoutResource(LoginService loginService){
+	public LogoutResource(EntityManager em, LoginService loginService){
 		this.loginService = loginService;
+		this.em = em;
 	}
 	
 	@GET
 	public Response logout() throws ServletException, IOException {
 		try {
-			List<String> urls = loginService.logout();
+			List<String> urls = loginService.logout(em);
 			return Response.ok(urls).build();
 		} catch (LoginException e) {
 			return Response.status(403).build();

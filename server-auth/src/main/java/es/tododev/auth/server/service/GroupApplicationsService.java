@@ -1,6 +1,7 @@
 package es.tododev.auth.server.service;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,11 +27,11 @@ public class GroupApplicationsService {
 		this.rolesService = rolesService;
 	}
 	
-	public GroupApplications create(User user, String groupId, String username, String url){
+	public GroupApplications create(EntityManager em, User user, String groupId, String username, String url){
 		GroupApplications groupApplications = new GroupApplications();
 		groupApplications.setGroupId(groupId);
 		Application application = applicationService.createApplication(groupApplications, groupId, uuid.create(), url, Constants.EXPIRE_COOKIE, DESCRIPTION);
-		rolesService.addRole(user, application, username, Constants.ADMIN_ROLE, Constants.USER_ROLE);
+		rolesService.addRole(em, user, application, username, Constants.ADMIN_ROLE, Constants.USER_ROLE);
 		log.debug("Group application: {}", groupApplications);
 		return groupApplications;
 	}
