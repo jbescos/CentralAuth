@@ -17,7 +17,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import es.tododev.auth.commons.Constants;
-import es.tododev.auth.server.aop.Transactional;
 import es.tododev.auth.server.dto.ApplicationDto;
 import es.tododev.auth.server.service.ApplicationService;
 

@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import {Subscription } from 'rxjs';
 import {Router, ActivatedRoute} from '@angular/router';
 import {RestService} from '../shared/rest.service';
-import {Dto} from '../shared/rest.login.dto';
 
 @Component({
   selector: 'my-logreg',
@@ -12,7 +11,6 @@ import {Dto} from '../shared/rest.login.dto';
 })
 export class LogregComponent implements OnInit, OnDestroy {
 
-  loginUrls: Dto;
   private subscription: Subscription;
   appId: string;
   mode = 'Observable';
@@ -22,7 +20,7 @@ export class LogregComponent implements OnInit, OnDestroy {
 
   clicked(username:string, password1:string, password2:string) {
     console.log("Clicked register with user: "+username);
-    this.restService.register(username, password1, password2, this.appId).subscribe(loginUrls => this.loginUrls = loginUrls);
+    this.restService.register(username, password1, password2, this.appId).subscribe(loginUrls => this.restService.notifyLoginToApps(loginUrls));
   }
 
   ngOnInit() {

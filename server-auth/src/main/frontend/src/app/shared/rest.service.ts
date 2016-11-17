@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core'
 import { Http, Response, URLSearchParams } from '@angular/http';
 import { Observable }     from 'rxjs/Observable';
-import { Dto } from './rest.login.dto';
  
 @Injectable()
 export class RestService{
@@ -12,9 +11,9 @@ export class RestService{
    constructor(private http: Http){
    }
 
-  private extractData(res: Response):Dto{
-    let body = res.json();
-    return body.data || { };
+  private extractData(res: Response):string[]{
+    let urls = <string[]>res.json();
+    return urls;
   }
 
   private handleError (error: any) {
@@ -23,25 +22,32 @@ export class RestService{
     return Observable.throw(errMsg);
   }
  
-   register(username:string, password1:string, password2:string, appId:string): Observable<Dto>{
-       let params = new URLSearchParams();
-       params.set('username', username);
-       params.set('password1', password1);
-       params.set('password2', password2);
-       if(appId != null){
-        params.set('appId', appId);
-       }
-       return this.http.get(this.register_url, {search: params}).map(res => this.extractData(res));
+   register(username:string, password1:string, password2:string, appId:string): Observable<string[]>{
+    let params = new URLSearchParams();
+    params.set('username', username);
+    params.set('password1', password1);
+    params.set('password2', password2);
+    if(appId != null){
+      params.set('appId', appId);
+    }
+    return this.http.get(this.register_url, {search: params}).map(res => this.extractData(res));
    }
 
-   login(username:string, password:string, appId:string): Observable<Dto>{
-       let params = new URLSearchParams();
-       params.set('username', username);
-       params.set('password', password);
-       if(appId != null){
-        params.set('appId', appId);
-       }
-       return this.http.get(this.login_url, {search: params}).map(res => this.extractData(res));
+   login(username:string, password:string, appId:string): Observable<string[]>{
+    let params = new URLSearchParams();
+    params.set('username', username);
+    params.set('password', password);
+    if(appId != null){
+      params.set('appId', appId);
+    }
+    return this.http.get(this.login_url, {search: params}).map(res => this.extractData(res));
+   }
+
+   notifyLoginToApps(urls: string[]){
+    console.log("Notify apps: "+urls);
+    for(let url of urls){
+      this.http.get(url).subscribe(res => console.log("Logged in: "+url));
+    }
    }
 
 }
