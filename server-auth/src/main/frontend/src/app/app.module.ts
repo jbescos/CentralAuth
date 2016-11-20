@@ -11,6 +11,7 @@ import { LogregComponent } from './logreg/logreg.component';
 import { WebmasterComponent } from './webmaster/webmaster.component';
 import { ApiService } from './shared';
 import { routing } from './app.routing';
+import {ApplicationComponent} from './application/application.component';
 
 import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
 
@@ -27,7 +28,8 @@ import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
     AboutComponent,
     LoginComponent,
     LogregComponent,
-    WebmasterComponent
+    WebmasterComponent,
+    ApplicationComponent
   ],
   providers: [
     ApiService

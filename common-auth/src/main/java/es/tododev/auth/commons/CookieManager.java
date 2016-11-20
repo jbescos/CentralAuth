@@ -17,7 +17,8 @@ public class CookieManager {
 		cookie.setMaxAge((int)(Constants.EXPIRE_COOKIE/1000));
 		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
-		log.info("Saving cookie {}", cookie);
+		request.setAttribute(Constants.APP_COOKIE, appToken);
+		log.info("Saving cookie {}", appToken);
 	}
 	
 	public String removeCookie(HttpServletRequest request, HttpServletResponse response){

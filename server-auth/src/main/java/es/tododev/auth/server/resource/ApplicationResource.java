@@ -4,8 +4,8 @@ import java.net.URISyntaxException;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -27,33 +27,35 @@ public class ApplicationResource {
 	
 	private final ApplicationService applicationService;
 	private final EntityManager em;
+	private final HttpServletRequest request;
 	
 	@Inject
-	public ApplicationResource(EntityManager em, ApplicationService applicationService){
+	public ApplicationResource(EntityManager em, ApplicationService applicationService, HttpServletRequest request){
 		this.em = em;
 		this.applicationService = applicationService;
+		this.request = request;
 	}
 
 	@POST
-	public Response addApplication(@CookieParam(Constants.APP_COOKIE) String appToken, @QueryParam("appId") String appId, @QueryParam("password") String password, @QueryParam("url") String url, @QueryParam("expireMillis") Long expireMillis, @QueryParam("description") String description) throws URISyntaxException{
-		applicationService.addApplication(em, appToken, appId, password, url, expireMillis, description);
+	public Response addApplication(@QueryParam("appId") String appId, @QueryParam("password") String password, @QueryParam("url") String url, @QueryParam("expireMillis") Long expireMillis, @QueryParam("description") String description) throws URISyntaxException{
+		applicationService.addApplication(em, (String)request.getAttribute(Constants.APP_COOKIE), appId, password, url, expireMillis, description);
 		return Response.ok(appId).build();
 	}
 	
 	@GET
-	public Response getApplications(@CookieParam(Constants.APP_COOKIE) String appToken){
-		return Response.ok(applicationService.getApplications(em, appToken)).build();
+	public Response getApplications(){
+		return Response.ok(applicationService.getApplications(em, (String)request.getAttribute(Constants.APP_COOKIE))).build();
 	}
 	
 	@DELETE
-	public Response delete(@CookieParam(Constants.APP_COOKIE) String appToken, @QueryParam("appId") String appId){
-		applicationService.deleteApplication(em, appToken, appId);
+	public Response delete(@QueryParam("appId") String appId){
+		applicationService.deleteApplication(em, (String)request.getAttribute(Constants.APP_COOKIE), appId);
 		return Response.ok(appId).build();
 	}
 	
 	@PUT
-	public Response update(@CookieParam(Constants.APP_COOKIE) String appToken, ApplicationDto dto){
-		applicationService.update(em, appToken, dto);
+	public Response update(ApplicationDto dto){
+		applicationService.update(em, (String)request.getAttribute(Constants.APP_COOKIE), dto);
 		return Response.ok(dto.getAppId()).build();
 	}
 	

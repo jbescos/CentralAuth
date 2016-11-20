@@ -1,12 +1,14 @@
 import {Injectable} from '@angular/core'
 import { Http, Response, URLSearchParams } from '@angular/http';
 import { Observable }     from 'rxjs/Observable';
+import {ApplicationDto} from './dto/application.dto';
  
 @Injectable()
 export class RestService{
  
    register_url:string = "server-auth/rest/account/register/";
    login_url:string = "server-auth/rest/account/login/";
+   get_applications:string = "server-auth/rest/auth/admin/application/";
  
    constructor(private http: Http){
    }
@@ -48,6 +50,10 @@ export class RestService{
     for(let url of urls){
       this.http.get(url).subscribe(res => console.log("Logged in: "+url));
     }
+   }
+
+   getApplications(): Observable<ApplicationDto[]>{
+     return this.http.get(this.get_applications).map(res => res.json().data as ApplicationDto[]);
    }
 
 }
