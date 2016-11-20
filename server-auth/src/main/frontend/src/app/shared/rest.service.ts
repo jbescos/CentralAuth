@@ -13,11 +13,6 @@ export class RestService{
    constructor(private http: Http){
    }
 
-  private extractData(res: Response):string[]{
-    let urls = <string[]>res.json();
-    return urls;
-  }
-
   private handleError (error: any) {
     let errMsg = (error.message) ? error.message : error.status ? `${error.status} - ${error.statusText}` : 'Server error';
     console.error(errMsg);
@@ -32,7 +27,7 @@ export class RestService{
     if(appId != null){
       params.set('appId', appId);
     }
-    return this.http.get(this.register_url, {search: params}).map(res => this.extractData(res));
+    return this.http.get(this.register_url, {search: params}).map(res => <string[]>res.json());
    }
 
    login(username:string, password:string, appId:string): Observable<string[]>{
@@ -42,7 +37,7 @@ export class RestService{
     if(appId != null){
       params.set('appId', appId);
     }
-    return this.http.get(this.login_url, {search: params}).map(res => this.extractData(res));
+    return this.http.get(this.login_url, {search: params}).map(res => <string[]>res.json());
    }
 
    notifyLoginToApps(urls: string[]){
@@ -53,7 +48,7 @@ export class RestService{
    }
 
    getApplications(): Observable<ApplicationDto[]>{
-     return this.http.get(this.get_applications).map(res => res.json().data as ApplicationDto[]);
+     return this.http.get(this.get_applications).map(res => <ApplicationDto[]>res.json());
    }
 
 }
