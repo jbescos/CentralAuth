@@ -50,17 +50,17 @@ export class RestService{
    }
 
    getApplications(): Observable<ApplicationDto[]>{
-     return this.http.get(this.get_applications, {withCredentials: true}).map(res => <ApplicationDto[]>res.json());
+     return this.http.get(this.get_applications).map(res => <ApplicationDto[]>res.json());
    }
 
    addApplication(dto:ApplicationDto){
-     this.http.post(this.get_applications, dto, {withCredentials: true}).subscribe(res => console.log("Application added: "+res));
+     this.http.post(this.get_applications, dto).subscribe(res => console.log("Application added: "+res));
    }
 
    deleteApplication(appId:string){
      let params = new URLSearchParams();
      params.set('appId', appId);
-     this.http.delete(this.get_applications, {search: params, withCredentials: true}).subscribe(res => console.log("Application removed: "+res));
+     this.http.delete(this.get_applications, {search: params}).subscribe(res => console.log("Application removed: "+res));
    }
 
    updateApplication(dto:ApplicationDto){
