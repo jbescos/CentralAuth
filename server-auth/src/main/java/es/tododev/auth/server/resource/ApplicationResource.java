@@ -37,9 +37,9 @@ public class ApplicationResource {
 	}
 
 	@POST
-	public Response addApplication(@QueryParam("appId") String appId, @QueryParam("password") String password, @QueryParam("url") String url, @QueryParam("expireMillis") Long expireMillis, @QueryParam("description") String description) throws URISyntaxException{
-		applicationService.addApplication(em, (String)request.getAttribute(Constants.APP_COOKIE), appId, password, url, expireMillis, description);
-		return Response.ok(appId).build();
+	public Response addApplication(ApplicationDto dto) throws URISyntaxException{
+		applicationService.addApplication(em, (String)request.getAttribute(Constants.APP_COOKIE), dto.getAppId(), dto.getPassword(), dto.getUrl(), dto.getExpireMillis(), dto.getDescription());
+		return Response.ok(dto.getAppId()).build();
 	}
 	
 	@GET

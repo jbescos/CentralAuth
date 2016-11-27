@@ -6,9 +6,10 @@ import {ApplicationDto} from './dto/application.dto';
 @Injectable()
 export class RestService{
  
-   register_url:string = "server-auth/rest/account/register/";
-   login_url:string = "server-auth/rest/account/login/";
-   get_applications:string = "server-auth/rest/auth/admin/application/";
+   base_url:string = "http://localhost:8080/";
+   register_url:string = this.base_url+"server-auth/rest/account/register/";
+   login_url:string = this.base_url+"server-auth/rest/account/login/";
+   get_applications:string = this.base_url+"server-auth/rest/auth/admin/application/";
  
    constructor(private http: Http){
    }
@@ -31,6 +32,7 @@ export class RestService{
    }
 
    login(username:string, password:string, appId:string): Observable<string[]>{
+    
     let params = new URLSearchParams();
     params.set('username', username);
     params.set('password', password);
@@ -41,14 +43,28 @@ export class RestService{
    }
 
    notifyLoginToApps(urls: string[]){
-    console.log("Notify apps: "+urls);
+    console.log("Notify apps {withCredentials: true}: "+urls);
     for(let url of urls){
-      this.http.get(url).subscribe(res => console.log("Logged in: "+url));
+      this.http.get(url, {withCredentials: true}).subscribe(res => console.log("Logged in: "+url));
     }
    }
 
    getApplications(): Observable<ApplicationDto[]>{
-     return this.http.get(this.get_applications).map(res => <ApplicationDto[]>res.json());
+     return this.http.get(this.get_applications, {withCredentials: true}).map(res => <ApplicationDto[]>res.json());
+   }
+
+   addApplication(dto:ApplicationDto){
+     this.http.post(this.get_applications, dto, {withCredentials: true}).subscribe(res => console.log("Application added: "+res));
+   }
+
+   deleteApplication(appId:string){
+     let params = new URLSearchParams();
+     params.set('appId', appId);
+     this.http.delete(this.get_applications, {search: params, withCredentials: true}).subscribe(res => console.log("Application removed: "+res));
+   }
+
+   updateApplication(dto:ApplicationDto){
+     this.http.put(this.get_applications, dto).subscribe(res => console.log("Application removed: "+res));
    }
 
 }

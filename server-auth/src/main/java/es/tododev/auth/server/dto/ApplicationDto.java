@@ -5,6 +5,8 @@ public class ApplicationDto {
 	private String appId;
 	private String url;
 	private String description;
+	private Long expireMillis;
+	private String password;
 	
 	public ApplicationDto() {
 		super();
@@ -34,6 +36,18 @@ public class ApplicationDto {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public Long getExpireMillis() {
+		return expireMillis;
+	}
+	public void setExpireMillis(Long expireMillis) {
+		this.expireMillis = expireMillis;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	
 }

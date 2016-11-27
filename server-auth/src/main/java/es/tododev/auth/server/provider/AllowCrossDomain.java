@@ -12,8 +12,9 @@ public class AllowCrossDomain implements ContainerResponseFilter {
 
 	@Override
 	public void filter(ContainerRequestContext request, ContainerResponseContext response) throws IOException {
-		response.getHeaders().add("Access-Control-Allow-Origin", "*");
-		response.getHeaders().add("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
+		// FIXME check if it will work in other domains
+		response.getHeaders().add("Access-Control-Allow-Origin", "http://localhost:8081");
+		response.getHeaders().add("Access-Control-Allow-Headers", "Content-Type, *");
 		response.getHeaders().add("Access-Control-Allow-Credentials", "true");
 		response.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD");
 	}
